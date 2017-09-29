@@ -1,0 +1,21 @@
+invoice:
+  taxpayerCode: 1
+  taxpayerAddress: 2
+  taxpayerTel: 3
+  taxpayerBankName: 4
+  taxpayerBankAccount: 5
+  appCode: 1
+  cmdName: 1
+  sign: 1
+
+catalogCode:
+  FHF: 1070204070000000000
+  YJF: 1070205010000000000
+
+sapconfig:
+  client: 202
+  ashost: 192.168.7.11
+  sysnr: 00
+  user: salesys
+  passwd: 123456
+  lang: zh

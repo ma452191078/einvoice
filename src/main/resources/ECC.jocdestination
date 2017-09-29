@@ -1,0 +1,8 @@
+#SAP Logon parameters!
+
+jco.client.lang=ZH
+jco.client.client=202
+jco.client.passwd=123456
+jco.client.user=SALESYS
+jco.client.sysnr=00
+jco.client.ashost=192.168.7.11
