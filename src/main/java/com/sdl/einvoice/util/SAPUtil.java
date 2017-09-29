@@ -1,6 +1,5 @@
 package com.sdl.einvoice.util;
 
-import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoDestinationManager;
 import com.sap.conn.jco.JCoException;
