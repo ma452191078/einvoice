@@ -24,7 +24,7 @@ public class SAPUtil {
          * which should be located in the installation folder of project
          */
 
-        JCoDestination dest = JCoDestinationManager.getDestination("ECC");
+        JCoDestination dest = JCoDestinationManager.getDestination("/src/ECC");
         return dest;
     }
 
