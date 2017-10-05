@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -79,75 +81,98 @@ public class SAPUtil {
     }
 
 
-    public static void executeWithTable(String funName, String importName, String exportName, String tableName) throws JCoException
+    /**
+     * 返回Structure
+     * @param funName   Function名称
+     * @param importList    import参数
+     * @param importTableList 传入Table
+     * @param returnPara    返回structure结构
+     * @return  返回值
+     * @throws JCoException
+     */
+    public HashMap<String, Object> executeSapFun(String funName, HashMap<String, String> importList, HashMap<String, List<HashMap<String, Object>>> importTableList, HashMap<String, Object> returnPara) throws JCoException
     {
         JCoDestination destination = JCoDestinationManager.getDestination(ABAP_AS_POOLED);
         JCoFunction function = destination.getRepository().getFunction(funName);
+//        检查function是否存在
         if(function == null)
             throw new RuntimeException(funName + " not found in SAP.");
+        JCoParameterList inputParams = null;
+        JCoParameterList exportParams = null;
 
+        HashMap<String, Object> result = new HashMap<>();
         try
         {
+            //遍历import参数，写入传入参数
+            if (importList != null){
+                for (String str : importList.keySet()){
+                    inputParams.setValue(importList.get(str), str);
+                }
+            }
+
+            //遍历Table参数
+            JCoTable importTable;
+            if (importTableList != null){
+                for (String str : importTableList.keySet()){
+                    importTable = function.getTableParameterList().getTable(str);
+                    List<HashMap<String, Object>> li = importTableList.get(str);
+                    SetJcoTable(li, importTable); // 设置内表参数
+                }
+            }
+
+            //执行function
             function.execute(destination);
+
+            //取返回数据
+            if (returnPara != null){
+                //检查export参数
+                for (String str : returnPara.keySet()){
+                    exportParams = function.getExportParameterList();
+                    result.put(str, exportParams.getString(str));
+                }
+                //检查Table参数
+//                for (String str : returnPara.keySet()){
+//                    JCoTable table = function.getTableParameterList().getTable(str);
+//                    result.put(str, table);
+//                }
+            }
         }
         catch(AbapException e)
         {
             System.out.println(e.toString());
-            return;
         }
-
-        JCoStructure returnStructure = function.getExportParameterList().getStructure(exportName);
-        if (! (returnStructure.getString("TYPE").equals("")||returnStructure.getString("TYPE").equals("S"))  )
-        {
-            throw new RuntimeException(returnStructure.getString("MESSAGE"));
-        }
-
-        JCoTable codes = function.getTableParameterList().getTable("COMPANYCODE_LIST");
-        for (int i = 0; i < codes.getNumRows(); i++)
-        {
-            codes.setRow(i);
-            System.out.println(codes.getString("COMP_CODE") + '\t' + codes.getString("COMP_NAME"));
-        }
-
-        codes.firstRow();
-        for (int i = 0; i < codes.getNumRows(); i++, codes.nextRow())
-        {
-            function = destination.getRepository().getFunction("BAPI_COMPANYCODE_GETDETAIL");
-            if (function == null)
-                throw new RuntimeException("BAPI_COMPANYCODE_GETDETAIL not found in SAP.");
-
-            function.getImportParameterList().setValue("COMPANYCODEID", codes.getString("COMP_CODE"));
-            function.getExportParameterList().setActive("COMPANYCODE_ADDRESS",false);
-
-            try
-            {
-                function.execute(destination);
-            }
-            catch (AbapException e)
-            {
-                System.out.println(e.toString());
-                return;
-            }
-
-            returnStructure = function.getExportParameterList().getStructure("RETURN");
-            if (! (returnStructure.getString("TYPE").equals("") ||
-                    returnStructure.getString("TYPE").equals("S") ||
-                    returnStructure.getString("TYPE").equals("W")) )
-            {
-                throw new RuntimeException(returnStructure.getString("MESSAGE"));
-            }
-
-            JCoStructure detail = function.getExportParameterList().getStructure("COMPANYCODE_DETAIL");
-
-            System.out.println(detail.getString("COMP_CODE") + '\t' +
-                    detail.getString("COUNTRY") + '\t' +
-                    detail.getString("CITY"));
-        }//for
+        return result;
     }
+
+
+
+    // 设置SAP表格参数
+    private static void SetJcoTable(List<HashMap<String, Object>> li,
+                                    JCoTable importTable) {
+        int i = 0;
+        for (HashMap<String, Object> u : li) {
+            importTable.appendRow();
+            importTable.setRow(i);
+            for (String t : u.keySet()) {
+                importTable.setValue(String.valueOf(u.get(t)), t);
+            }
+        }
+    }
+
 
     public static void main(String[] args) throws JCoException
     {
         SAPUtil sapUtil = new SAPUtil(null);
-        createConnect();
+        String functionName = "Z_SDL_RH_NOTIFY";
+        HashMap<String, String> importParam = new HashMap<>();
+        importParam.put("IJSON", "");
+
+        HashMap<String,Object> returnParam = new HashMap<>();
+        returnParam.put("OFLAG","");
+        returnParam.put("OMSG","");
+
+
+        HashMap<String, Object> result = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
+        System.out.println(result);
     }
 }
