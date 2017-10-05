@@ -1,12 +1,14 @@
 package com.sdl.einvoice.controller;
 
 import com.google.gson.Gson;
+import com.sap.conn.jco.JCoException;
 import com.sdl.einvoice.config.InvoiceConfig;
 import com.sdl.einvoice.constant.InvoiceConstant;
 import com.sdl.einvoice.domain.*;
 import com.sdl.einvoice.util.BASE64Util;
 import com.sdl.einvoice.util.HttpUtil;
 import com.sdl.einvoice.util.InvoiceUtil;
+import com.sdl.einvoice.util.SAPUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -95,23 +97,46 @@ public class InvoiceController {
 
 
     @RequestMapping("/notifyStanley")
-    public String notifyStanley(ResultInvoice resultInvoice){
+    public String notifyStanley(SyncResult resultInvoice){
         String result = "failed";
         if (resultInvoice != null && !"".equals(resultInvoice.getCode())){
             if (resultInvoice.getCode().equals(InvoiceConstant.CODE_SUCCESS)){
-                //TODO 发票处理成功
+                // 发票处理成功
+                SAPUtil sapUtil = new SAPUtil(null);
+                //function名称
+                String functionName = "Z_SDL_RH_NOTIFY";
+                HashMap<String, Object> exportParam;
+                // 组装数据
 
-                //TODO 组装数据
 
-                //TODO 调用RFC
+                // 传入参数
+                HashMap<String, String> importParam = new HashMap<>();
+                importParam.put("IJSON", "1");
+
+                // 传出参数
+                HashMap<String,Object> returnParam = new HashMap<>();
+                returnParam.put("OFLAG","");
+                returnParam.put("OMSG","");
+
+                // 调用RFC
+                try {
+                    exportParam = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
+                    if (exportParam.get("OFLAG").equals("0")){
+                        result = "success";
+                        log.info("sap执行成功，数据已接收");
+                    }else {
+                        log.info("sap执行失败，{}",exportParam.get("OMSG"));
+                    }
+                } catch (JCoException e) {
+                    log.error(e.getMessageText());
+                    e.printStackTrace();
+                }
 
             } else {
                 //TODO 发票处理失败
+                log.info("银行处理失败");
             }
         }
-
-
-
 
         return result;
     }

@@ -97,8 +97,8 @@ public class SAPUtil {
 //        检查function是否存在
         if(function == null)
             throw new RuntimeException(funName + " not found in SAP.");
-        JCoParameterList inputParams = null;
-        JCoParameterList exportParams = null;
+        JCoParameterList inputParams = function.getImportParameterList();
+        JCoParameterList exportParams = function.getExportParameterList();
 
         HashMap<String, Object> result = new HashMap<>();
         try
@@ -106,7 +106,7 @@ public class SAPUtil {
             //遍历import参数，写入传入参数
             if (importList != null){
                 for (String str : importList.keySet()){
-                    inputParams.setValue(importList.get(str), str);
+                    inputParams.setValue(str, importList.get(str));
                 }
             }
 
@@ -163,15 +163,19 @@ public class SAPUtil {
     public static void main(String[] args) throws JCoException
     {
         SAPUtil sapUtil = new SAPUtil(null);
+//        function名称
         String functionName = "Z_SDL_RH_NOTIFY";
-        HashMap<String, String> importParam = new HashMap<>();
-        importParam.put("IJSON", "");
 
+//        传入参数
+        HashMap<String, String> importParam = new HashMap<>();
+        importParam.put("IJSON", "1");
+
+//        传出参数
         HashMap<String,Object> returnParam = new HashMap<>();
         returnParam.put("OFLAG","");
         returnParam.put("OMSG","");
 
-
+//        调用function
         HashMap<String, Object> result = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
         System.out.println(result);
     }
