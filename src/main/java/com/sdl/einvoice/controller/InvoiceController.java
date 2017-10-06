@@ -55,13 +55,7 @@ public class InvoiceController {
         rhInvoice.setTaxpayerBankAccount(invoiceConfig.getTaxpayerBankAccount());
         rhInvoice.setTaxpayerBankName(invoiceConfig.getTaxpayerBankName());
 
-
-        // 创建发票行项目
-//        RHInvoiceItem rhInvoiceItem = new RHInvoiceItem();
-//        List<RHInvoiceItem> items = new ArrayList<>();
-//        items.add(rhInvoiceItem);
-//        rhInvoice.setItems(items);
-
+        // 创建发票
         createInvoice.setInvoice(rhInvoice);
         createInvoice.setOrder(rhOrder);
         createInvoice.setNotices(null);
@@ -75,8 +69,13 @@ public class InvoiceController {
         log.info("请求报文：" + requestJson);
 
         String actionUrl = InvoiceConstant.DEV_CREATE_URL;
-        String sign = CertificateUtils.signToBase64(requestJson.getBytes("UTF-8"), invoiceConfig.getKeyStorePath(), invoiceConfig.getKeyStoreAbner(), invoiceConfig.getKeyStorePassWord());
-        System.out.println("签名字符串：" + sign);
+        String sign = CertificateUtils.signToBase64(
+                requestJson.getBytes("UTF-8"),
+                invoiceConfig.getKeyStorePath(),
+                invoiceConfig.getKeyStoreAbner(),
+                invoiceConfig.getKeyStorePassWord()
+        );
+        log.info("签名字符串：" + sign);
         actionUrl = actionUrl.replace(InvoiceConstant.SIGN, sign);
         actionUrl = actionUrl.replace(InvoiceConstant.APPCODE, invoiceConfig.getAppCode());
         actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, invoiceConfig.getCmdName());
@@ -111,7 +110,7 @@ public class InvoiceController {
         String requestJson = gson.toJson(redInvoice);
         String actionUrl = InvoiceConstant.DEV_CREATE_URL;
         String sign = CertificateUtils.signToBase64(requestJson.getBytes("UTF-8"), invoiceConfig.getKeyStorePath(), invoiceConfig.getKeyStoreAbner(), invoiceConfig.getKeyStorePassWord());
-        System.out.println("签名字符串：" + sign);
+        log.info("签名字符串：" + sign);
         actionUrl = actionUrl.replace(InvoiceConstant.SIGN, sign);
         actionUrl = actionUrl.replace(InvoiceConstant.APPCODE, invoiceConfig.getAppCode());
         actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, invoiceConfig.getCmdName());
@@ -137,41 +136,48 @@ public class InvoiceController {
     public String notifyStanley(SyncResult resultInvoice){
         String result = "failed";
         if (resultInvoice != null && !"".equals(resultInvoice.getCode())){
-            if (resultInvoice.getCode().equals(InvoiceConstant.CODE_SUCCESS)){
-                // 发票处理成功
-                SAPUtil sapUtil = new SAPUtil(null);
-                //function名称
-                String functionName = "Z_SDL_RH_NOTIFY";
-                HashMap<String, Object> exportParam;
-                // 组装数据
+            // 发票处理成功
+            SAPUtil sapUtil = new SAPUtil(null);
+            //function名称
+            String functionName = "Z_SDL_RH_NOTIFY";
+            HashMap<String, Object> exportParam;
+            // 组装数据
+            SAPNotify sapNotify = new SAPNotify();
+            sapNotify.setSerialNo(resultInvoice.getSerialNo());
+            sapNotify.setCode(resultInvoice.getCode());
+            sapNotify.setMessage(resultInvoice.getMessage());
+            sapNotify.setOrderNo(resultInvoice.getInvoices().get(0).getOrdreNo());
+            sapNotify.setOriCode(resultInvoice.getInvoices().get(0).getCode());
+            sapNotify.setStatus(resultInvoice.getInvoices().get(0).getStatus());
+            sapNotify.setGentime(resultInvoice.getInvoices().get(0).getGenerateTime());
+            sapNotify.setPdfUrl(resultInvoice.getInvoices().get(0).getPdfUnsignedUrl());
+            sapNotify.setViewUrl(resultInvoice.getInvoices().get(0).getViewUrl());
+            sapNotify.setRelatedCode(resultInvoice.getInvoices().get(0).getRelatedCode());
+            sapNotify.setValidReason(resultInvoice.getInvoices().get(0).getValidReason());
+            sapNotify.setValidTime(resultInvoice.getInvoices().get(0).getValidTime());
 
+            // 传入参数
+            Gson gson = new Gson();
+            HashMap<String, String> importParam = new HashMap<>();
+            importParam.put("IJSON", gson.toJson(sapNotify));
 
-                // 传入参数
-                HashMap<String, String> importParam = new HashMap<>();
-                importParam.put("IJSON", "1");
+            // 传出参数
+            HashMap<String,Object> returnParam = new HashMap<>();
+            returnParam.put("OFLAG","");
+            returnParam.put("OMSG","");
 
-                // 传出参数
-                HashMap<String,Object> returnParam = new HashMap<>();
-                returnParam.put("OFLAG","");
-                returnParam.put("OMSG","");
-
-                // 调用RFC
-                try {
-                    exportParam = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
-                    if (exportParam.get("OFLAG").equals("0")){
-                        result = "success";
-                        log.info("sap执行成功，数据已接收");
-                    }else {
-                        log.info("sap执行失败，{}",exportParam.get("OMSG"));
-                    }
-                } catch (JCoException e) {
-                    log.error(e.getMessageText());
-                    e.printStackTrace();
+            // 调用RFC
+            try {
+                exportParam = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
+                if (exportParam.get("OFLAG").equals("0")){
+                    result = "success";
+                    log.info("sap执行成功，数据已接收");
+                }else {
+                    log.info("sap执行失败，{}",exportParam.get("OMSG"));
                 }
-
-            } else {
-                //TODO 发票处理失败
-                log.info("银行处理失败");
+            } catch (JCoException e) {
+                log.info("sap执行失败，{}",e.getMessageText());
+                e.printStackTrace();
             }
         }
 

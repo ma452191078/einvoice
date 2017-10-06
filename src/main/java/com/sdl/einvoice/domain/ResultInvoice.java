@@ -13,6 +13,8 @@ import java.util.Map;
  */
 @Data
 public class ResultInvoice {
+    private String ordreNo;
+    private String taxpayerName;
     //    公司纳税人识别号
     private String taxpayerCode;
     //    公司地址

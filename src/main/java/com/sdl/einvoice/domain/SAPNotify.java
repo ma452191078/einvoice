@@ -34,5 +34,5 @@ public class SAPNotify {
     // 冲红原因
     private String validReason;
     // 冲红时间
-    private Number validTime;
+    private String validTime;
 }
