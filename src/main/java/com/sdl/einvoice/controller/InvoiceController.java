@@ -94,8 +94,24 @@ public class InvoiceController {
         return gson.toJson(result);
     }
 
+    /**
+     * 红冲发票接口
+     * @return
+     */
+    @RequestMapping("/writeoffInvoice")
+    public String writeoffInvoice(){
+        String result = "";
+        Gson gson = new Gson();
+
+        return gson.toJson(result);
+    }
 
 
+    /**
+     * 发票处理回调接口
+     * @param resultInvoice
+     * @return
+     */
     @RequestMapping("/notifyStanley")
     public String notifyStanley(SyncResult resultInvoice){
         String result = "failed";
