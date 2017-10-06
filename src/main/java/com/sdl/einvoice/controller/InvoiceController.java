@@ -5,15 +5,13 @@ import com.sap.conn.jco.JCoException;
 import com.sdl.einvoice.config.InvoiceConfig;
 import com.sdl.einvoice.constant.InvoiceConstant;
 import com.sdl.einvoice.domain.*;
-import com.sdl.einvoice.util.BASE64Util;
-import com.sdl.einvoice.util.HttpUtil;
-import com.sdl.einvoice.util.InvoiceUtil;
-import com.sdl.einvoice.util.SAPUtil;
+import com.sdl.einvoice.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,22 +32,22 @@ public class InvoiceController {
     @Autowired
     private InvoiceConfig invoiceConfig;
 
+    /**
+     * 创建发票
+     * @param rhInvoice
+     * @return
+     */
     @RequestMapping("/createInvoice")
-    public String createInvoice(RHInvoice rhInvoice){
+    public String createInvoice(RHInvoice rhInvoice) throws Exception {
         log.info("开始执行");
         Map<String, Object> result = new HashMap<>();
-        String actionUrl = InvoiceConstant.DEV_CREATE_URL;
-
-        actionUrl = actionUrl.replace(InvoiceConstant.APPCODE, invoiceConfig.getAppCode());
-        actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, invoiceConfig.getCmdName());
-        actionUrl = actionUrl.replace(InvoiceConstant.SIGN, BASE64Util.getRevFromBase64(invoiceConfig.getSign().getBytes()));
 
         RHCreateInvoice createInvoice = new RHCreateInvoice();
 
-        //TODO 创建订单信息
+        // 创建订单信息
         RHOrder rhOrder = new RHOrder();
 
-        //TODO 补充开票人发票信息
+        // 补充开票人发票信息
         log.info("补充开票人信息");
         rhInvoice.setTaxpayerCode(invoiceConfig.getTaxpayerCode());
         rhInvoice.setTaxpayerTel(invoiceConfig.getTaxpayerTel());
@@ -58,22 +56,15 @@ public class InvoiceController {
         rhInvoice.setTaxpayerBankName(invoiceConfig.getTaxpayerBankName());
 
 
-        //TODO 创建发票行项目
+        // 创建发票行项目
 //        RHInvoiceItem rhInvoiceItem = new RHInvoiceItem();
 //        List<RHInvoiceItem> items = new ArrayList<>();
 //        items.add(rhInvoiceItem);
 //        rhInvoice.setItems(items);
 
-        //TODO 通知信息
-        List<RHNotices> noticesList = new ArrayList<>();
-        RHNotices rhNotices = new RHNotices();
-        rhNotices.setType("sms");
-        rhNotices.setValue("18265186760");
-        noticesList.add(rhNotices);
-
         createInvoice.setInvoice(rhInvoice);
         createInvoice.setOrder(rhOrder);
-        createInvoice.setNotices(noticesList);
+        createInvoice.setNotices(null);
         createInvoice.setExtendedParams(null);
         createInvoice.setSerialNo(InvoiceUtil.getSerialNo());
         createInvoice.setPostTime(InvoiceUtil.getPostTime());
@@ -81,9 +72,17 @@ public class InvoiceController {
 //        转换为json
         Gson gson = new Gson();
         String requestJson = gson.toJson(createInvoice);
-        log.info(requestJson);
-//        String sr = HttpUtil.sendPost(actionUrl, requestJson);
-//        log.debug(sr);
+        log.info("请求报文：" + requestJson);
+
+        String actionUrl = InvoiceConstant.DEV_CREATE_URL;
+        String sign = CertificateUtils.signToBase64(requestJson.getBytes("UTF-8"), invoiceConfig.getKeyStorePath(), invoiceConfig.getKeyStoreAbner(), invoiceConfig.getKeyStorePassWord());
+        System.out.println("签名字符串：" + sign);
+        actionUrl = actionUrl.replace(InvoiceConstant.SIGN, sign);
+        actionUrl = actionUrl.replace(InvoiceConstant.APPCODE, invoiceConfig.getAppCode());
+        actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, invoiceConfig.getCmdName());
+
+//        String responseJson = HttpUtil.sendPost(actionUrl, requestJson);
+//        log.debug("响应报文" + responseJson);
 //
 //        SyncResult syncResult = gson.fromJson(sr, SyncResult.class);
 //
@@ -99,10 +98,32 @@ public class InvoiceController {
      * @return
      */
     @RequestMapping("/writeoffInvoice")
-    public String writeoffInvoice(){
-        String result = "";
+    public String writeoffInvoice(RHRedInvoice redInvoice) throws Exception {
         Gson gson = new Gson();
+        log.info("开始执行");
+        Map<String, Object> result = new HashMap<>();
 
+        redInvoice.setSerialNo(InvoiceUtil.getSerialNo());
+        redInvoice.setPostTime(InvoiceUtil.getPostTime());
+        redInvoice.setNotices(null);
+        redInvoice.setExtendedParams(null);
+
+        String requestJson = gson.toJson(redInvoice);
+        String actionUrl = InvoiceConstant.DEV_CREATE_URL;
+        String sign = CertificateUtils.signToBase64(requestJson.getBytes("UTF-8"), invoiceConfig.getKeyStorePath(), invoiceConfig.getKeyStoreAbner(), invoiceConfig.getKeyStorePassWord());
+        System.out.println("签名字符串：" + sign);
+        actionUrl = actionUrl.replace(InvoiceConstant.SIGN, sign);
+        actionUrl = actionUrl.replace(InvoiceConstant.APPCODE, invoiceConfig.getAppCode());
+        actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, invoiceConfig.getCmdName());
+
+//        String responseJson = HttpUtil.sendPost(actionUrl, requestJson);
+//        log.debug("响应报文" + responseJson);
+//
+//        SyncResult syncResult = gson.fromJson(sr, SyncResult.class);
+//
+        result.put("SERIALNO", redInvoice.getSerialNo());
+//        result.put("CODE", syncResult.getCode());
+//        result.put("MESSAGE", syncResult.getMessage());
         return gson.toJson(result);
     }
 

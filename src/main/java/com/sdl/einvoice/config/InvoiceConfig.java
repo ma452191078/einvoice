@@ -33,7 +33,19 @@ public class InvoiceConfig {
      */
     private String taxpayerBankAccount;
 
+    // 由电子发票平台分配的appCode
     private String appCode;
+
     private String cmdName;
+    // 签名
     private String sign;
+    // 证书路径
+    private String keyStorePath;
+    // 证书别名
+    private String keyStoreAbner;
+    // 证书密码
+    private String keyStorePassWord;
+
+
+
 }

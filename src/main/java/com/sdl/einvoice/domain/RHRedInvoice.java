@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by majingyuan on 2017/9/26.
  */
 @Data
-public class RHRednvoice {
+public class RHRedInvoice {
 //    操作流水号
     private String serialNo;
 //    请求发送时间yyyy-MM-dd HH:mm:ss

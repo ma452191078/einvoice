@@ -1,5 +1,8 @@
 package com.sdl.einvoice.util;
 
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 /**
  * @Author majingyuan
  * @Date Create in 2017/9/26 16:29

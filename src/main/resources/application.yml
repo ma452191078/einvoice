@@ -1,12 +1,15 @@
 invoice:
-  taxpayerCode: 1
+  taxpayerCode: 12345678909876543
   taxpayerAddress: 2
   taxpayerTel: 3
   taxpayerBankName: 4
   taxpayerBankAccount: 5
-  appCode: 1
-  cmdName: 1
-  sign: 1
+  appCode: PT000030
+  cmdName: 123456
+  sign: 0
+  keyStorePath: /Users/majingyuan/mineLog/beijingceshi.keystore
+  keyStoreAbner: PT000030
+  keyStorePassWord: 123456
 
 catalogCode:
   FHF: 1070204070000000000
