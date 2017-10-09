@@ -1,11 +1,11 @@
 package com.sdl.einvoice.util;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import javax.net.ssl.*;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 
 /**
  * 网络请求工具类
@@ -14,6 +14,20 @@ import java.net.URL;
  */
 public class HttpUtil {
 
+    private static class DefaultTrustManager implements X509TrustManager {
+
+        public X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+
+        public void checkClientTrusted(X509Certificate[] cert, String oauthType)
+                throws java.security.cert.CertificateException {
+        }
+
+        public void checkServerTrusted(X509Certificate[] cert, String oauthType)
+                throws java.security.cert.CertificateException {
+        }
+    }
     /**
      * 向指定 URL 发送POST方法的请求
      *
@@ -30,8 +44,22 @@ public class HttpUtil {
 
         try {
             URL realUrl = new URL(url);
+
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() },
+                    new SecureRandom());
+
+            HttpsURLConnection connHttps = (HttpsURLConnection) realUrl.openConnection();
+            connHttps.setSSLSocketFactory(ctx.getSocketFactory());
+            connHttps.setHostnameVerifier(new HostnameVerifier() {
+
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;// 默认都认证通过
+                }
+            });
+            HttpURLConnection httpConn = connHttps;
             // 打开和URL之间的连接
-            HttpURLConnection httpConn = (HttpURLConnection) realUrl.openConnection();
+//            HttpURLConnection httpConn = (HttpURLConnection) realUrl.openConnection();
             // //设置连接属性
             httpConn.setDoOutput(true);// 使用 URL 连接进行输出
             httpConn.setDoInput(true);// 使用 URL 连接进行输入

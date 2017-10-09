@@ -114,12 +114,12 @@ public class InvoiceController {
         actionUrl = actionUrl.replace(InvoiceConstant.SIGN, sign);
         actionUrl = actionUrl.replace(InvoiceConstant.APPCODE, invoiceConfig.getAppCode());
         actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, invoiceConfig.getCmdName());
+        log.info("请求URL:" + actionUrl);
+        String responseJson = HttpUtil.sendPost(actionUrl, requestJson);
+        log.debug("响应报文" + responseJson);
 
-//        String responseJson = HttpUtil.sendPost(actionUrl, requestJson);
-//        log.debug("响应报文" + responseJson);
-//
-//        SyncResult syncResult = gson.fromJson(sr, SyncResult.class);
-//
+        SyncResult syncResult = gson.fromJson(responseJson, SyncResult.class);
+
         result.put("SERIALNO", redInvoice.getSerialNo());
 //        result.put("CODE", syncResult.getCode());
 //        result.put("MESSAGE", syncResult.getMessage());
