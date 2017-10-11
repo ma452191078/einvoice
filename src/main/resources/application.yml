@@ -4,9 +4,8 @@ invoice:
   taxpayerTel: 3
   taxpayerBankName: 4
   taxpayerBankAccount: 5
-  appCode: PT000030
-  cmdName: 123456
   sign: 0
+  appCode: PT000030
   keyStorePath: /Users/majingyuan/mineLog/beijingceshi.keystore
   keyStoreAbner: PT000030
   keyStorePassWord: 123456

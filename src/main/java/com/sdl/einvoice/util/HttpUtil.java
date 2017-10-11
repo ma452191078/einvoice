@@ -43,23 +43,24 @@ public class HttpUtil {
         String result = "";
 
         try {
+            url = url.replaceAll("\r|\n", "");
             URL realUrl = new URL(url);
 
-            SSLContext ctx = SSLContext.getInstance("TLS");
-            ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() },
-                    new SecureRandom());
-
-            HttpsURLConnection connHttps = (HttpsURLConnection) realUrl.openConnection();
-            connHttps.setSSLSocketFactory(ctx.getSocketFactory());
-            connHttps.setHostnameVerifier(new HostnameVerifier() {
-
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;// 默认都认证通过
-                }
-            });
-            HttpURLConnection httpConn = connHttps;
+//            SSLContext ctx = SSLContext.getInstance("TLS");
+//            ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() },
+//                    new SecureRandom());
+//
+//            HttpsURLConnection connHttps = (HttpsURLConnection) realUrl.openConnection();
+//            connHttps.setSSLSocketFactory(ctx.getSocketFactory());
+//            connHttps.setHostnameVerifier(new HostnameVerifier() {
+//
+//                public boolean verify(String hostname, SSLSession session) {
+//                    return true;// 默认都认证通过
+//                }
+//            });
+//            HttpURLConnection httpConn = connHttps;
             // 打开和URL之间的连接
-//            HttpURLConnection httpConn = (HttpURLConnection) realUrl.openConnection();
+            HttpURLConnection httpConn = (HttpURLConnection) realUrl.openConnection();
             // //设置连接属性
             httpConn.setDoOutput(true);// 使用 URL 连接进行输出
             httpConn.setDoInput(true);// 使用 URL 连接进行输入
@@ -70,6 +71,9 @@ public class HttpUtil {
             // 获得数据字节数据，请求数据流的编码，必须和下面服务器端处理请求流的编码一致
             httpConn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             httpConn.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
+            httpConn.setDoInput(true);
+            httpConn.setDoOutput(true);
+            httpConn.setRequestProperty("User-Agent", "einv-restclient-java-3.0");
 
             // 建立输出流，并写入数据
             OutputStream outputStream = httpConn.getOutputStream();

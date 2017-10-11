@@ -8,10 +8,12 @@ import com.sdl.einvoice.domain.*;
 import com.sdl.einvoice.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,32 +34,34 @@ public class InvoiceController {
     @Autowired
     private InvoiceConfig invoiceConfig;
 
+    private static String encode = "UTF-8";
+
     /**
      * 创建发票
      * @param rhInvoice
      * @return
      */
     @RequestMapping("/createInvoice")
-    public String createInvoice(RHInvoice rhInvoice) throws Exception {
-        log.info("开始执行");
+    public String createInvoice(@RequestBody RHInvoice rhInvoice) throws Exception {
+        System.out.println("开始执行");
         Map<String, Object> result = new HashMap<>();
 
         RHCreateInvoice createInvoice = new RHCreateInvoice();
 
         // 创建订单信息
-        RHOrder rhOrder = new RHOrder();
-
         // 补充开票人发票信息
-        log.info("补充开票人信息");
+        System.out.println("补充开票人信息");
         rhInvoice.setTaxpayerCode(invoiceConfig.getTaxpayerCode());
         rhInvoice.setTaxpayerTel(invoiceConfig.getTaxpayerTel());
         rhInvoice.setTaxpayerAddress(invoiceConfig.getTaxpayerAddress());
         rhInvoice.setTaxpayerBankAccount(invoiceConfig.getTaxpayerBankAccount());
         rhInvoice.setTaxpayerBankName(invoiceConfig.getTaxpayerBankName());
 
+
+
         // 创建发票
         createInvoice.setInvoice(rhInvoice);
-        createInvoice.setOrder(rhOrder);
+        createInvoice.setOrder(rhInvoice.getOrder());
         createInvoice.setNotices(null);
         createInvoice.setExtendedParams(null);
         createInvoice.setSerialNo(InvoiceUtil.getSerialNo());
@@ -66,28 +70,30 @@ public class InvoiceController {
 //        转换为json
         Gson gson = new Gson();
         String requestJson = gson.toJson(createInvoice);
-        log.info("请求报文：" + requestJson);
+        System.out.println("请求报文：" + requestJson);
 
         String actionUrl = InvoiceConstant.DEV_CREATE_URL;
         String sign = CertificateUtils.signToBase64(
-                requestJson.getBytes("UTF-8"),
+                requestJson.getBytes(encode),
                 invoiceConfig.getKeyStorePath(),
                 invoiceConfig.getKeyStoreAbner(),
                 invoiceConfig.getKeyStorePassWord()
         );
-        log.info("签名字符串：" + sign);
-        actionUrl = actionUrl.replace(InvoiceConstant.SIGN, sign);
-        actionUrl = actionUrl.replace(InvoiceConstant.APPCODE, invoiceConfig.getAppCode());
-        actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, invoiceConfig.getCmdName());
+        sign = sign.replaceAll("\r|\n", "");
+        System.out.println("签名字符串：" + sign);
+        actionUrl = actionUrl.replace(InvoiceConstant.SIGN, URLEncoder.encode(sign, encode));
+        actionUrl = actionUrl.replace(InvoiceConstant.APPCODE, URLEncoder.encode(invoiceConfig.getAppCode(), encode));
+        actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, URLEncoder.encode(InvoiceConstant.CMD_CREATE, encode));
 
-//        String responseJson = HttpUtil.sendPost(actionUrl, requestJson);
-//        log.debug("响应报文" + responseJson);
+        String responseJson = HttpUtil.sendPost(actionUrl, requestJson);
+        System.out.println("请求URL：" + actionUrl);
+        System.out.println("响应报文：" + responseJson);
+
+        AsyncResult syncResult = gson.fromJson(responseJson, AsyncResult.class);
 //
-//        SyncResult syncResult = gson.fromJson(sr, SyncResult.class);
-//
-        result.put("SERIALNO", createInvoice.getSerialNo());
-//        result.put("CODE", syncResult.getCode());
-//        result.put("MESSAGE", syncResult.getMessage());
+        result.put("SERIALNO", syncResult.getSerialNo());
+        result.put("CODE", syncResult.getCode());
+        result.put("MESSAGE", syncResult.getMessage());
 
         return gson.toJson(result);
     }
@@ -109,20 +115,25 @@ public class InvoiceController {
 
         String requestJson = gson.toJson(redInvoice);
         String actionUrl = InvoiceConstant.DEV_CREATE_URL;
-        String sign = CertificateUtils.signToBase64(requestJson.getBytes("UTF-8"), invoiceConfig.getKeyStorePath(), invoiceConfig.getKeyStoreAbner(), invoiceConfig.getKeyStorePassWord());
+        String sign = CertificateUtils.signToBase64(
+                requestJson.getBytes("UTF-8"),
+                invoiceConfig.getKeyStorePath(),
+                invoiceConfig.getKeyStoreAbner(),
+                invoiceConfig.getKeyStorePassWord()
+        );
         log.info("签名字符串：" + sign);
         actionUrl = actionUrl.replace(InvoiceConstant.SIGN, sign);
         actionUrl = actionUrl.replace(InvoiceConstant.APPCODE, invoiceConfig.getAppCode());
-        actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, invoiceConfig.getCmdName());
+        actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, InvoiceConstant.CMD_RED);
         log.info("请求URL:" + actionUrl);
         String responseJson = HttpUtil.sendPost(actionUrl, requestJson);
         log.debug("响应报文" + responseJson);
 
-        SyncResult syncResult = gson.fromJson(responseJson, SyncResult.class);
+        AsyncResult syncResult = gson.fromJson(responseJson, AsyncResult.class);
 
-        result.put("SERIALNO", redInvoice.getSerialNo());
-//        result.put("CODE", syncResult.getCode());
-//        result.put("MESSAGE", syncResult.getMessage());
+        result.put("SERIALNO", syncResult.getSerialNo());
+        result.put("CODE", syncResult.getCode());
+        result.put("MESSAGE", syncResult.getMessage());
         return gson.toJson(result);
     }
 

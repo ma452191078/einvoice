@@ -1,6 +1,7 @@
 package com.sdl.einvoice.domain;
 
 import lombok.Data;
+import org.omg.CORBA.PRIVATE_MEMBER;
 
 import java.util.List;
 
@@ -45,4 +46,7 @@ public class RHInvoice {
     private String remark;
 //    发票明细
     private List<RHInvoiceItem> items;
+
+    //订单
+    private RHOrder order;
 }

@@ -1,5 +1,6 @@
 package com.sdl.einvoice.util;
 
+
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -17,7 +18,7 @@ public class BASE64Util {
     public static String getStrFromBase64(String s) {
         if (s == null)
             return null;
-        sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();
+        sun.misc.BASE64Decoder decoder = new BASE64Decoder();
         try {
             byte[] b = decoder.decodeBuffer(s);
             return new String(b, "UTF-8");
@@ -34,7 +35,7 @@ public class BASE64Util {
     public static byte[] getByteFromBase64(String s) {
         if (s == null)
             return null;
-        sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();
+        sun.misc.BASE64Decoder decoder = new BASE64Decoder();
         try {
             return decoder.decodeBuffer(s);
         } catch (Exception e) {
@@ -49,7 +50,7 @@ public class BASE64Util {
     public static String getRevFromBase64(byte[] s) {
         if (s == null)
             return null;
-        sun.misc.BASE64Encoder encoder = new sun.misc.BASE64Encoder();
+        sun.misc.BASE64Encoder encoder = new BASE64Encoder();
         try {
             return encoder.encode(s);
         } catch (Exception e) {
