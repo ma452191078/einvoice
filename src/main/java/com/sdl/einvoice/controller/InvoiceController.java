@@ -57,11 +57,14 @@ public class InvoiceController {
         rhInvoice.setTaxpayerBankAccount(invoiceConfig.getTaxpayerBankAccount());
         rhInvoice.setTaxpayerBankName(invoiceConfig.getTaxpayerBankName());
 
-
+        //创建订单
+        RHOrder order = new RHOrder();
+        order.setOrderNo(rhInvoice.getRemark());
+        order.setAccount(rhInvoice.getCustomerName());
 
         // 创建发票
         createInvoice.setInvoice(rhInvoice);
-        createInvoice.setOrder(rhInvoice.getOrder());
+        createInvoice.setOrder(order);
         createInvoice.setNotices(null);
         createInvoice.setExtendedParams(null);
         createInvoice.setSerialNo(InvoiceUtil.getSerialNo());
@@ -79,13 +82,13 @@ public class InvoiceController {
                 invoiceConfig.getKeyStoreAbner(),
                 invoiceConfig.getKeyStorePassWord()
         );
-        sign = sign.replaceAll("\r|\n", "");
         System.out.println("签名字符串：" + sign);
-        actionUrl = actionUrl.replace(InvoiceConstant.SIGN, URLEncoder.encode(sign, encode));
-        actionUrl = actionUrl.replace(InvoiceConstant.APPCODE, URLEncoder.encode(invoiceConfig.getAppCode(), encode));
-        actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, URLEncoder.encode(InvoiceConstant.CMD_CREATE, encode));
+        Map<String, String> vars = new HashMap<String, String>();
+        vars.put("appCode", URLEncoder.encode(invoiceConfig.getAppCode(), encode));
+        vars.put("cmdName", URLEncoder.encode(InvoiceConstant.CMD_CREATE, encode));
+        vars.put("sign", URLEncoder.encode(sign, encode));
 
-        String responseJson = HttpUtil.sendPost(actionUrl, requestJson);
+        String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
         System.out.println("请求URL：" + actionUrl);
         System.out.println("响应报文：" + responseJson);
 
@@ -122,11 +125,12 @@ public class InvoiceController {
                 invoiceConfig.getKeyStorePassWord()
         );
         log.info("签名字符串：" + sign);
-        actionUrl = actionUrl.replace(InvoiceConstant.SIGN, sign);
-        actionUrl = actionUrl.replace(InvoiceConstant.APPCODE, invoiceConfig.getAppCode());
-        actionUrl = actionUrl.replace(InvoiceConstant.CMDNAME, InvoiceConstant.CMD_RED);
+        Map<String, String> vars = new HashMap<String, String>();
+        vars.put("appCode", URLEncoder.encode(invoiceConfig.getAppCode(), encode));
+        vars.put("cmdName", URLEncoder.encode(InvoiceConstant.CMD_RED, encode));
+        vars.put("sign", URLEncoder.encode(sign, encode));
+        String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
         log.info("请求URL:" + actionUrl);
-        String responseJson = HttpUtil.sendPost(actionUrl, requestJson);
         log.debug("响应报文" + responseJson);
 
         AsyncResult syncResult = gson.fromJson(responseJson, AsyncResult.class);

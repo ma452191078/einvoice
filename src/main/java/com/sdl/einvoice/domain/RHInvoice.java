@@ -46,7 +46,4 @@ public class RHInvoice {
     private String remark;
 //    发票明细
     private List<RHInvoiceItem> items;
-
-    //订单
-    private RHOrder order;
 }

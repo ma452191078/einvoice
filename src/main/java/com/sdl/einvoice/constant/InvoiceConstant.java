@@ -10,9 +10,10 @@ public interface InvoiceConstant {
 //    有机肥
     String catalogCodeYJF = "1070205010000000000";
 
-    String PRD_CREATE_URL = "https://www.chinaeinv.com/igs/api/invoiceApi.jspa?appCode=APPCODE&cmdName=CMDNAME&sign=SIGN";
+    String PRD_CREATE_URL = "https://www.chinaeinv.com/igs/api/invoiceApi.jspa";
 //    String DEV_CREATE_URL = "https://www.chinaeinv.com:943/igs/api/invoiceApi.jspa?appCode=APPCODE&cmdName=CMDNAME&sign=SIGN";
-    String DEV_CREATE_URL = "http://www.chinaeinv.com:980/igs/api/invoiceApi.jspa?appCode=APPCODE&cmdName=CMDNAME&sign=SIGN";
+//    String DEV_CREATE_URL = "http://www.chinaeinv.com:980/igs/api/invoiceApi.jspa?appCode=APPCODE&cmdName=CMDNAME&sign=SIGN";
+    String DEV_CREATE_URL = "http://www.chinaeinv.com:980/igs/api/invoiceApi.jspa";
 
     String APPCODE = "APPCODE";
     String CMDNAME = "CMDNAME";

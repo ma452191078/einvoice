@@ -43,7 +43,7 @@ public class HttpUtil {
         String result = "";
 
         try {
-            url = url.replaceAll("\r|\n", "");
+//            url = url.replaceAll("\r|\n", "");
             URL realUrl = new URL(url);
 
 //            SSLContext ctx = SSLContext.getInstance("TLS");
