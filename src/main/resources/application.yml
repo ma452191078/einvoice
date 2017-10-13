@@ -1,3 +1,5 @@
+server:
+  context-path: /ICBCMiddleWare
 invoice:
   taxpayerCode: 12345678909876543
   taxpayerAddress: 2
