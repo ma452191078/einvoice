@@ -12,11 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -43,14 +40,17 @@ public class InvoiceController {
      */
     @RequestMapping("/createInvoice")
     public String createInvoice(@RequestBody RHInvoice rhInvoice) throws Exception {
-        System.out.println("开始执行");
+        log.info("开始执行开票操作");
+        System.out.println("开始执行开票操作");
         Map<String, Object> result = new HashMap<>();
 
         RHCreateInvoice createInvoice = new RHCreateInvoice();
 
         // 创建订单信息
         // 补充开票人发票信息
+        log.info("补充开票人信息");
         System.out.println("补充开票人信息");
+
         rhInvoice.setTaxpayerCode(invoiceConfig.getTaxpayerCode());
         rhInvoice.setTaxpayerTel(invoiceConfig.getTaxpayerTel());
         rhInvoice.setTaxpayerAddress(invoiceConfig.getTaxpayerAddress());
@@ -73,6 +73,7 @@ public class InvoiceController {
 //        转换为json
         Gson gson = new Gson();
         String requestJson = gson.toJson(createInvoice);
+        log.info("请求报文：" + requestJson);
         System.out.println("请求报文：" + requestJson);
 
         String actionUrl = InvoiceConstant.DEV_CREATE_URL;
@@ -82,6 +83,7 @@ public class InvoiceController {
                 invoiceConfig.getKeyStoreAbner(),
                 invoiceConfig.getKeyStorePassWord()
         );
+        log.info("签名字符串：" + sign);
         System.out.println("签名字符串：" + sign);
         Map<String, String> vars = new HashMap<String, String>();
         vars.put("appCode", URLEncoder.encode(invoiceConfig.getAppCode(), encode));
@@ -89,7 +91,9 @@ public class InvoiceController {
         vars.put("sign", URLEncoder.encode(sign, encode));
 
         String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
+        log.info("请求URL：" + actionUrl);
         System.out.println("请求URL：" + actionUrl);
+        log.info("响应报文：" + responseJson);
         System.out.println("响应报文：" + responseJson);
 
         AsyncResult syncResult = gson.fromJson(responseJson, AsyncResult.class);
@@ -106,17 +110,20 @@ public class InvoiceController {
      * @return
      */
     @RequestMapping("/writeoffInvoice")
-    public String writeoffInvoice(RHRedInvoice redInvoice) throws Exception {
+    public String writeoffInvoice(@RequestBody RHRedInvoice redInvoice) throws Exception {
         Gson gson = new Gson();
-        log.info("开始执行");
+        log.info("开始执行红冲操作");
+        System.out.println("开始执行红冲操作");
         Map<String, Object> result = new HashMap<>();
 
         redInvoice.setSerialNo(InvoiceUtil.getSerialNo());
         redInvoice.setPostTime(InvoiceUtil.getPostTime());
-        redInvoice.setNotices(null);
-        redInvoice.setExtendedParams(null);
+//        redInvoice.setNotices(null);
+//        redInvoice.setExtendedParams(null);
 
         String requestJson = gson.toJson(redInvoice);
+        log.info("请求报文：" + requestJson);
+        System.out.println("请求报文：" + requestJson);
         String actionUrl = InvoiceConstant.DEV_CREATE_URL;
         String sign = CertificateUtils.signToBase64(
                 requestJson.getBytes("UTF-8"),
@@ -125,13 +132,16 @@ public class InvoiceController {
                 invoiceConfig.getKeyStorePassWord()
         );
         log.info("签名字符串：" + sign);
+        System.out.println("签名字符串：" + sign);
         Map<String, String> vars = new HashMap<String, String>();
         vars.put("appCode", URLEncoder.encode(invoiceConfig.getAppCode(), encode));
         vars.put("cmdName", URLEncoder.encode(InvoiceConstant.CMD_RED, encode));
         vars.put("sign", URLEncoder.encode(sign, encode));
         String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
         log.info("请求URL:" + actionUrl);
-        log.debug("响应报文" + responseJson);
+        System.out.println("请求URL:" + actionUrl);
+        log.info("响应报文：" + responseJson);
+        System.out.println("响应报文：" + responseJson);
 
         AsyncResult syncResult = gson.fromJson(responseJson, AsyncResult.class);
 
@@ -150,7 +160,9 @@ public class InvoiceController {
     @RequestMapping("/notifyStanley")
     public String notifyStanley(SyncResult resultInvoice){
         String result = "failed";
-        if (resultInvoice != null && !"".equals(resultInvoice.getCode())){
+        System.out.println("回调执行");
+        System.out.println(resultInvoice.toString());
+        if (resultInvoice.getInvoices() != null && !"".equals(resultInvoice.getCode())){
             // 发票处理成功
             SAPUtil sapUtil = new SAPUtil(null);
             //function名称
@@ -187,11 +199,14 @@ public class InvoiceController {
                 if (exportParam.get("OFLAG").equals("0")){
                     result = "success";
                     log.info("sap执行成功，数据已接收");
+                    System.out.println("sap执行成功，数据已接收");
                 }else {
                     log.info("sap执行失败，{}",exportParam.get("OMSG"));
+                    System.out.println("sap执行失败，" + exportParam.get("OMSG"));
                 }
             } catch (JCoException e) {
-                log.info("sap执行失败，{}",e.getMessageText());
+                log.info("sap执行失败，{}",e.getMessage());
+                System.out.println("sap执行失败，" + e.getMessage());
                 e.printStackTrace();
             }
         }

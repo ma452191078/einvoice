@@ -38,5 +38,5 @@ public class RHInvoiceItem {
 //    增值税特殊管理
     private String addedValueTaxFlg;
 //    零税率标识，
-    private String zeroTaxRateFlg;
+//    private String zeroTaxRateFlg;
 }

@@ -8,7 +8,8 @@ invoice:
   taxpayerBankAccount: 5
   sign: 0
   appCode: PT000030
-  keyStorePath: /Users/majingyuan/mineLog/beijingceshi.keystore
+#  keyStorePath: E:\apache-tomcat-7.0.70\webapps\beijingceshi.keystore
+  keyStorePath: /usr/local/tomcat8/webapps/beijingceshi.keystore
   keyStoreAbner: PT000030
   keyStorePassWord: 123456
 
