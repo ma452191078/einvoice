@@ -25,23 +25,23 @@ public class SAPUtil {
     public SAPUtil(SapConfig sapConfig){
 
         Properties connectProperties = new Properties();
-//        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, sapConfig.getAshost());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  sapConfig.getSysnr());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, sapConfig.getClient());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   sapConfig.getUser());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, sapConfig.getPasswd());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   sapConfig.getLang());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, sapConfig.getPoolCapacity());  //最大空连接数
-//        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    sapConfig.getPeakLimit()); //最大活动连接数
+        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, sapConfig.getAshost());
+        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  sapConfig.getSysnr());
+        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, sapConfig.getClient());
+        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   sapConfig.getUser());
+        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, sapConfig.getPasswd());
+        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   sapConfig.getLang());
+        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, sapConfig.getPoolCapacity());  //最大空连接数
+        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    sapConfig.getPeakLimit()); //最大活动连接数
 
-        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.7.11");
-        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  "00");
-        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "202");
-        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   "SALESYS");
-        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "L1S32JZ");
-        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   "zh");
-        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3");  //最大空连接数
-        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    "10"); //最大活动连接数
+//        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.7.11");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  "00");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "202");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   "SALESYS");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "L1S32JZ");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   "zh");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3");  //最大空连接数
+//        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    "10"); //最大活动连接数
         createDataFile(ABAP_AS_POOLED, SUFFIX, connectProperties);
 
     }
