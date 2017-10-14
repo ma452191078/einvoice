@@ -18,4 +18,8 @@ public class SapConfig {
     private String user;
     private String passwd;
     private String lang;
+    //最大空连接数
+    private String poolCapacity;
+    //最大活动连接数
+    private String peakLimit;
 }

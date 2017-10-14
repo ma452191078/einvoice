@@ -20,6 +20,7 @@ import java.util.Properties;
 public class SAPUtil {
 
     static String ABAP_AS_POOLED = "ABAP_AS_WITH_POOL";
+    static String SUFFIX = "jcoDestination";
 
     public SAPUtil(SapConfig sapConfig){
 
@@ -30,16 +31,18 @@ public class SAPUtil {
 //        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   sapConfig.getUser());
 //        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, sapConfig.getPasswd());
 //        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   sapConfig.getLang());
+//        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, sapConfig.getPoolCapacity());  //最大空连接数
+//        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    sapConfig.getPeakLimit()); //最大活动连接数
 
         connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.7.11");
         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  "00");
         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "202");
-        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   "majy");
-        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "20140254");
+        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   "SALESYS");
+        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "L1S32JZ");
         connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   "zh");
         connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3");  //最大空连接数
         connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    "10"); //最大活动连接数
-        createDataFile("ABAP_AS_POOLED", "jcoDestination", connectProperties);
+        createDataFile(ABAP_AS_POOLED, SUFFIX, connectProperties);
 
     }
 
@@ -163,6 +166,7 @@ public class SAPUtil {
     public static void main(String[] args) throws JCoException
     {
         SAPUtil sapUtil = new SAPUtil(null);
+
 //        function名称
         String functionName = "Z_SDL_RH_NOTIFY";
 

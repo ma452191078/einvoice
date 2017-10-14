@@ -3,6 +3,7 @@ package com.sdl.einvoice.controller;
 import com.google.gson.Gson;
 import com.sap.conn.jco.JCoException;
 import com.sdl.einvoice.config.InvoiceConfig;
+import com.sdl.einvoice.config.SapConfig;
 import com.sdl.einvoice.constant.InvoiceConstant;
 import com.sdl.einvoice.domain.*;
 import com.sdl.einvoice.util.*;
@@ -32,6 +33,9 @@ public class InvoiceController {
     private InvoiceConfig invoiceConfig;
 
     private static String encode = "UTF-8";
+
+    @Autowired
+    private SapConfig sapConfig;
 
     /**
      * 创建发票
@@ -156,14 +160,14 @@ public class InvoiceController {
      * @return
      */
     @RequestMapping("/notifyStanley")
-    public String notifyStanley(SyncResult resultInvoice){
+    public String notifyStanley(@RequestBody SyncResult resultInvoice){
         String result = "failed";
         log.info("===============史丹利电子发票==============");
         log.info("===============开始执行回调操作==============");
         log.info("回调报文：{}",resultInvoice.toString());
         if (resultInvoice.getInvoices() != null && !"".equals(resultInvoice.getCode())){
             // 发票处理成功
-            SAPUtil sapUtil = new SAPUtil(null);
+            SAPUtil sapUtil = new SAPUtil(sapConfig);
             //function名称
             String functionName = "Z_SDL_RH_NOTIFY";
             HashMap<String, Object> exportParam;
