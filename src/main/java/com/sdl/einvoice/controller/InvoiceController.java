@@ -40,8 +40,8 @@ public class InvoiceController {
      */
     @RequestMapping("/createInvoice")
     public String createInvoice(@RequestBody RHInvoice rhInvoice) throws Exception {
-        log.info("开始执行开票操作");
-        System.out.println("开始执行开票操作");
+        log.info("===============史丹利电子发票==============");
+        log.info("==============开始执行开票操作==============");
         Map<String, Object> result = new HashMap<>();
 
         RHCreateInvoice createInvoice = new RHCreateInvoice();
@@ -49,13 +49,20 @@ public class InvoiceController {
         // 创建订单信息
         // 补充开票人发票信息
         log.info("补充开票人信息");
-        System.out.println("补充开票人信息");
 
         rhInvoice.setTaxpayerCode(invoiceConfig.getTaxpayerCode());
         rhInvoice.setTaxpayerTel(invoiceConfig.getTaxpayerTel());
         rhInvoice.setTaxpayerAddress(invoiceConfig.getTaxpayerAddress());
         rhInvoice.setTaxpayerBankAccount(invoiceConfig.getTaxpayerBankAccount());
         rhInvoice.setTaxpayerBankName(invoiceConfig.getTaxpayerBankName());
+        if (rhInvoice.getItems() != null && rhInvoice.getItems().size() > 0){
+            for (int i = 0; i < rhInvoice.getItems().size(); i++) {
+                if ("1".equals(rhInvoice.getItems().get(i).getType())){
+                    rhInvoice.getItems().get(i).setUom(null);
+                    rhInvoice.getItems().get(i).setSpec(null);
+                }
+            }
+        }
 
         //创建订单
         RHOrder order = new RHOrder();
@@ -74,7 +81,6 @@ public class InvoiceController {
         Gson gson = new Gson();
         String requestJson = gson.toJson(createInvoice);
         log.info("请求报文：" + requestJson);
-        System.out.println("请求报文：" + requestJson);
 
         String actionUrl = InvoiceConstant.DEV_CREATE_URL;
         String sign = CertificateUtils.signToBase64(
@@ -84,7 +90,6 @@ public class InvoiceController {
                 invoiceConfig.getKeyStorePassWord()
         );
         log.info("签名字符串：" + sign);
-        System.out.println("签名字符串：" + sign);
         Map<String, String> vars = new HashMap<String, String>();
         vars.put("appCode", URLEncoder.encode(invoiceConfig.getAppCode(), encode));
         vars.put("cmdName", URLEncoder.encode(InvoiceConstant.CMD_CREATE, encode));
@@ -92,16 +97,14 @@ public class InvoiceController {
 
         String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
         log.info("请求URL：" + actionUrl);
-        System.out.println("请求URL：" + actionUrl);
         log.info("响应报文：" + responseJson);
-        System.out.println("响应报文：" + responseJson);
 
         AsyncResult syncResult = gson.fromJson(responseJson, AsyncResult.class);
 //
         result.put("SERIALNO", syncResult.getSerialNo());
         result.put("CODE", syncResult.getCode());
         result.put("MESSAGE", syncResult.getMessage());
-
+        log.info("===============结束==============");
         return gson.toJson(result);
     }
 
@@ -112,18 +115,15 @@ public class InvoiceController {
     @RequestMapping("/writeoffInvoice")
     public String writeoffInvoice(@RequestBody RHRedInvoice redInvoice) throws Exception {
         Gson gson = new Gson();
-        log.info("开始执行红冲操作");
-        System.out.println("开始执行红冲操作");
+        log.info("===============史丹利电子发票==============");
+        log.info("==============开始执行红冲操作==============");
         Map<String, Object> result = new HashMap<>();
 
         redInvoice.setSerialNo(InvoiceUtil.getSerialNo());
         redInvoice.setPostTime(InvoiceUtil.getPostTime());
-//        redInvoice.setNotices(null);
-//        redInvoice.setExtendedParams(null);
 
         String requestJson = gson.toJson(redInvoice);
         log.info("请求报文：" + requestJson);
-        System.out.println("请求报文：" + requestJson);
         String actionUrl = InvoiceConstant.DEV_CREATE_URL;
         String sign = CertificateUtils.signToBase64(
                 requestJson.getBytes("UTF-8"),
@@ -132,22 +132,20 @@ public class InvoiceController {
                 invoiceConfig.getKeyStorePassWord()
         );
         log.info("签名字符串：" + sign);
-        System.out.println("签名字符串：" + sign);
         Map<String, String> vars = new HashMap<String, String>();
         vars.put("appCode", URLEncoder.encode(invoiceConfig.getAppCode(), encode));
         vars.put("cmdName", URLEncoder.encode(InvoiceConstant.CMD_RED, encode));
         vars.put("sign", URLEncoder.encode(sign, encode));
         String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
         log.info("请求URL:" + actionUrl);
-        System.out.println("请求URL:" + actionUrl);
         log.info("响应报文：" + responseJson);
-        System.out.println("响应报文：" + responseJson);
 
         AsyncResult syncResult = gson.fromJson(responseJson, AsyncResult.class);
 
         result.put("SERIALNO", syncResult.getSerialNo());
         result.put("CODE", syncResult.getCode());
         result.put("MESSAGE", syncResult.getMessage());
+        log.info("===============结束==============");
         return gson.toJson(result);
     }
 
@@ -160,8 +158,9 @@ public class InvoiceController {
     @RequestMapping("/notifyStanley")
     public String notifyStanley(SyncResult resultInvoice){
         String result = "failed";
-        System.out.println("回调执行");
-        System.out.println(resultInvoice.toString());
+        log.info("===============史丹利电子发票==============");
+        log.info("===============开始执行回调操作==============");
+        log.info("回调报文：{}",resultInvoice.toString());
         if (resultInvoice.getInvoices() != null && !"".equals(resultInvoice.getCode())){
             // 发票处理成功
             SAPUtil sapUtil = new SAPUtil(null);
@@ -210,7 +209,7 @@ public class InvoiceController {
                 e.printStackTrace();
             }
         }
-
+        log.info("===============结束==============");
         return result;
     }
 
