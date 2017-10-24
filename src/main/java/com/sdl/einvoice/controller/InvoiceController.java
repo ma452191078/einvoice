@@ -125,7 +125,9 @@ public class InvoiceController {
 
         redInvoice.setSerialNo(InvoiceUtil.getSerialNo());
         redInvoice.setPostTime(InvoiceUtil.getPostTime());
-
+        if(redInvoice.getItems() != null && redInvoice.getItems().size() == 0){
+            redInvoice.setItems(null);
+        }
         String requestJson = gson.toJson(redInvoice);
         log.info("请求报文：" + requestJson);
         String actionUrl = InvoiceConstant.DEV_CREATE_URL;

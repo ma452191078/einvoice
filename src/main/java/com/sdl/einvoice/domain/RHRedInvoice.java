@@ -20,7 +20,7 @@ public class RHRedInvoice {
 //    冲红原因
     private String reason;
 //    发票项目
-//    private List<RHInvoiceItem> items;
+    private List<RHInvoiceItem> items;
 //    private RHNotices notices;
 //    private Map<String, Object> extendedParams;
 }
