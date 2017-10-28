@@ -7,6 +7,7 @@ invoice:
   sign: 0
   appCode: PT000030
 #  keyStorePath: E:\apache-tomcat-7.0.70\webapps\beijingceshi.keystore
+#  keyStorePath: /Users/majingyuan/mineLog/beijingceshi.keystore
   keyStorePath: /usr/local/tomcat8/webapps/beijingceshi.keystore
   keyStoreAbner: PT000030
   keyStorePassWord: 123456
@@ -19,8 +20,8 @@ sapconfig:
   client: 202
   ashost: 192.168.7.11
   sysnr: 00
-  user: MAJY
-  passwd: 20140254
+  user: SALESYS
+  passwd: L1S32JZ
   lang: zh
   poolCapacity: 3
   peakLimit: 10

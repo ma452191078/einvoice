@@ -1,5 +1,7 @@
 package com.sdl.einvoice.constant;
 
+import javax.print.DocFlavor;
+
 /**
  * 发票静态变量
  */
@@ -24,6 +26,10 @@ public interface InvoiceConstant {
     String CMD_CREATE = "chinaeinv.api.invoice.v3.kp_async";
     String CMD_RED = "chinaeinv.api.invoice.v3.ch_async";
     String CMD_SEARCH = "chinaeinv.api.invoice.v3.cx";
+
+    String SEARCH_TYPE_INVOICE_CODE = "invoiceCode";
+    String SEARCH_TYPE_ORDER_NO = "orderNo";
+    String SEARCH_TYPE_SERIAL_NO = "singlesSerialNo";
 
 
 }

@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -219,6 +221,61 @@ public class InvoiceController {
         return result;
     }
 
+    @RequestMapping("/searchInvoice")
+    public String searchInvoice(@RequestBody Criteria criteria) throws Exception{
 
+        Gson gson = new Gson();
+        log.info("===============史丹利电子发票==============");
+        log.info("==============开始执行查询操作==============");
+        Map<String, Object> result = new HashMap<>();
+        RHSearchInvoice searchInvoice = new RHSearchInvoice();
+        searchInvoice.setSerialNo(InvoiceUtil.getSerialNo());
+        searchInvoice.setPostTime(InvoiceUtil.getPostTime());
+        if(criteria != null && !"".equals(criteria.getValue())){
+            criteria.setName(InvoiceConstant.SEARCH_TYPE_SERIAL_NO);
+            List<Criteria> criteriaList = new ArrayList<>();
+            criteriaList.add(criteria);
+            searchInvoice.setCriteria(criteriaList);
+        }else{
+            searchInvoice.setCriteria(null);
+        }
+        String requestJson = gson.toJson(searchInvoice);
+        log.info("请求报文：" + requestJson);
+        String actionUrl = InvoiceConstant.DEV_CREATE_URL;
+        String sign = CertificateUtils.signToBase64(
+                requestJson.getBytes("UTF-8"),
+                invoiceConfig.getKeyStorePath(),
+                invoiceConfig.getKeyStoreAbner(),
+                invoiceConfig.getKeyStorePassWord()
+        );
+        log.info("签名字符串：" + sign);
+        Map<String, String> vars = new HashMap<String, String>();
+        vars.put("appCode", URLEncoder.encode(invoiceConfig.getAppCode(), encode));
+        vars.put("cmdName", URLEncoder.encode(InvoiceConstant.CMD_SEARCH, encode));
+        vars.put("sign", URLEncoder.encode(sign, encode));
+        String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
+        log.info("请求URL:" + actionUrl);
+        log.info("响应报文：" + responseJson);
+
+        SyncResult syncResult = gson.fromJson(responseJson, SyncResult.class);
+
+        // 组装数据
+        SAPNotify sapNotify = new SAPNotify();
+        sapNotify.setSerialNo(syncResult.getSerialNo());
+        sapNotify.setCode(syncResult.getCode());
+        sapNotify.setMessage(syncResult.getMessage());
+        sapNotify.setOrderNo(syncResult.getInvoices().get(0).getOrdreNo());
+        sapNotify.setOriCode(syncResult.getInvoices().get(0).getCode());
+        sapNotify.setStatus(syncResult.getInvoices().get(0).getStatus());
+        sapNotify.setGentime(syncResult.getInvoices().get(0).getGenerateTime());
+        sapNotify.setPdfUrl(syncResult.getInvoices().get(0).getPdfUnsignedUrl());
+        sapNotify.setViewUrl(syncResult.getInvoices().get(0).getViewUrl());
+        sapNotify.setRelatedCode(syncResult.getInvoices().get(0).getRelatedCode());
+        sapNotify.setValidReason(syncResult.getInvoices().get(0).getValidReason());
+        sapNotify.setValidTime(syncResult.getInvoices().get(0).getValidTime());
+
+        log.info("===============结束==============");
+        return gson.toJson(sapNotify);
+    }
 
 }

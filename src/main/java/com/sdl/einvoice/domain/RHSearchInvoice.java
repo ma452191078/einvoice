@@ -2,6 +2,7 @@ package com.sdl.einvoice.domain;
 
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,5 +15,5 @@ public class RHSearchInvoice {
     private String serialNo;
 //    请求发送时间yyyy-MM-dd HH:mm:ss
     private String postTime;
-    private Map<String, Object> criteria;
+    private List<Criteria> criteria;
 }

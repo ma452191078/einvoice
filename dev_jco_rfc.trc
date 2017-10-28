@@ -8,3 +8,118 @@ Error:  >Fri Sep 29 18:51:19,566<    >RfcGetException rc (7) message: ##.#####,#
 Error:  >Fri Sep 29 18:54:10,260<    >RfcGetException rc (7) message: ##.#####,####
 <RfcGetException
 
+
+**** Error file opened at 20171028 134725 China Standard Time Rel 3.0.2 Hotfix (2009-09-01) [720.612]
+Error:  >Sat Oct 28 13:47:25,215<    
+RfcException: [null]
+    message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=ABAP_AS_WITH_POOL ASHOST=192.168.7.11 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host
+ERROR       hostname 'MAJy-3.local' unknown
+TIME        Sat Oct 28 13:47:25 2017
+RELEASE     720
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      niuxi.c
+LINE        1759
+DETAIL      NiPGetHostByName: 'MAJy-3.local' not found
+SYSTEM CALL getaddrinfo
+COUNTER     2
+
+    Return code: RFC_FAILURE(1)
+    error group: 102
+    key: RFC_ERROR_COMMUNICATION
+
+**** Error file opened at 20171028 134856 China Standard Time Rel 3.0.2 Hotfix (2009-09-01) [720.612]
+Error:  >Sat Oct 28 13:48:56,778<    
+RfcException: [null]
+    message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=ABAP_AS_WITH_POOL ASHOST=192.168.7.11 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host
+ERROR       hostname 'MAJy-3.local' unknown
+TIME        Sat Oct 28 13:48:56 2017
+RELEASE     720
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      niuxi.c
+LINE        1759
+DETAIL      NiPGetHostByName: 'MAJy-3.local' not found
+SYSTEM CALL getaddrinfo
+COUNTER     2
+
+    Return code: RFC_FAILURE(1)
+    error group: 102
+    key: RFC_ERROR_COMMUNICATION
+
+**** Error file opened at 20171028 135218 China Standard Time Rel 3.0.2 Hotfix (2009-09-01) [720.612]
+Error:  >Sat Oct 28 13:52:18,137<    
+RfcException: [null]
+    message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=ABAP_AS_WITH_POOL ASHOST=192.168.7.11 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host
+ERROR       hostname 'MAJy-3.local' unknown
+TIME        Sat Oct 28 13:52:18 2017
+RELEASE     720
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      niuxi.c
+LINE        1759
+DETAIL      NiPGetHostByName: 'MAJy-3.local' not found
+SYSTEM CALL getaddrinfo
+COUNTER     2
+
+    Return code: RFC_FAILURE(1)
+    error group: 102
+    key: RFC_ERROR_COMMUNICATION
+
+**** Error file opened at 20171028 135229 China Standard Time Rel 3.0.2 Hotfix (2009-09-01) [720.612]
+Error:  >Sat Oct 28 13:52:29,721<    
+RfcException: [null]
+    message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=ABAP_AS_WITH_POOL ASHOST=192.168.7.11 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host
+ERROR       hostname 'MAJy-3.local' unknown
+TIME        Sat Oct 28 13:52:29 2017
+RELEASE     720
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      niuxi.c
+LINE        1759
+DETAIL      NiPGetHostByName: 'MAJy-3.local' not found
+SYSTEM CALL getaddrinfo
+COUNTER     2
+
+    Return code: RFC_FAILURE(1)
+    error group: 102
+    key: RFC_ERROR_COMMUNICATION
+
+**** Error file opened at 20171028 140856 China Standard Time Rel 3.0.2 Hotfix (2009-09-01) [720.612]
+Error:  >Sat Oct 28 14:08:56,150<    
+RfcException: [null]
+    message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=ABAP_AS_WITH_POOL ASHOST=192.168.7.11 SYSNR=00 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host
+ERROR       hostname 'MAJy-3.local' unknown
+TIME        Sat Oct 28 14:08:56 2017
+RELEASE     720
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      niuxi.c
+LINE        1759
+DETAIL      NiPGetHostByName: 'MAJy-3.local' not found
+SYSTEM CALL getaddrinfo
+COUNTER     2
+
+    Return code: RFC_FAILURE(1)
+    error group: 102
+    key: RFC_ERROR_COMMUNICATION

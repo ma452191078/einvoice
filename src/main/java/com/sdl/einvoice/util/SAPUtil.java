@@ -39,8 +39,8 @@ public class SAPUtil {
 //        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.7.11");
 //        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  "00");
 //        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "202");
-//        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   "MAJY");
-//        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "20140254");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   "SALESYS");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "L1S32JZ");
 //        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   "zh");
 //        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3");  //最大空连接数
 //        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    "10"); //最大活动连接数
@@ -174,18 +174,18 @@ public class SAPUtil {
 
 //        传入参数
         SAPNotify sapNotify = new SAPNotify();
-        sapNotify.setSerialNo("344dc9fa-7461-4264-a2a5-eaa826c415ff");
-        sapNotify.setCode("0");
-        sapNotify.setMessage("处理成功。");
-        sapNotify.setOrderNo(null);
-        sapNotify.setOriCode("13702161508297700540");
-        sapNotify.setStatus("1");
-        sapNotify.setGentime("2017-10-18 11:35:00");
-        sapNotify.setPdfUrl("http://www.chinaeinv.com:980/pdfUnsigned.jspa?c=3822D479A8B3DFB722BF");
-        sapNotify.setViewUrl("http://www.chinaeinv.com:980/p.jspa?c=3822D479A8B3DFB722BF");
-        sapNotify.setRelatedCode(null);
-        sapNotify.setValidReason(null);
-        sapNotify.setValidTime(null);
+//        sapNotify.setSerialNo("344dc9fa-7461-4264-a2a5-eaa826c415ff");
+//        sapNotify.setCode("0");
+//        sapNotify.setMessage("处理成功。");
+//        sapNotify.setOrderNo(null);
+//        sapNotify.setOriCode("13702161508297700540");
+//        sapNotify.setStatus("1");
+//        sapNotify.setGentime("2017-10-18 11:35:00");
+//        sapNotify.setPdfUrl("http://www.chinaeinv.com:980/pdfUnsigned.jspa?c=3822D479A8B3DFB722BF");
+//        sapNotify.setViewUrl("http://www.chinaeinv.com:980/p.jspa?c=3822D479A8B3DFB722BF");
+//        sapNotify.setRelatedCode(null);
+//        sapNotify.setValidReason(null);
+//        sapNotify.setValidTime(null);
 
         // 传入参数
         Gson gson = new Gson();
