@@ -27,23 +27,23 @@ public class SAPUtil {
     public SAPUtil(SapConfig sapConfig){
 
         Properties connectProperties = new Properties();
-        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, sapConfig.getAshost());
-        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  sapConfig.getSysnr());
-        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, sapConfig.getClient());
-        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   sapConfig.getUser());
-        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, sapConfig.getPasswd());
-        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   sapConfig.getLang());
-        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, sapConfig.getPoolCapacity());  //最大空连接数
-        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    sapConfig.getPeakLimit()); //最大活动连接数
+//        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, sapConfig.getAshost());
+//        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  sapConfig.getSysnr());
+//        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, sapConfig.getClient());
+//        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   sapConfig.getUser());
+//        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, sapConfig.getPasswd());
+//        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   sapConfig.getLang());
+//        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, sapConfig.getPoolCapacity());  //最大空连接数
+//        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    sapConfig.getPeakLimit()); //最大活动连接数
 
-//        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.7.11");
-//        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  "00");
-//        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "202");
-//        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   "SALESYS");
-//        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "L1S32JZ");
-//        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   "zh");
-//        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3");  //最大空连接数
-//        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    "10"); //最大活动连接数
+        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.7.7");
+        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  "10");
+        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "800");
+        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   "SALESYS");
+        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "L1S32JZ");
+        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   "zh");
+        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3");  //最大空连接数
+        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    "10"); //最大活动连接数
         createDataFile(ABAP_AS_POOLED, SUFFIX, connectProperties);
 
     }
@@ -170,7 +170,7 @@ public class SAPUtil {
         SAPUtil sapUtil = new SAPUtil(null);
 
 //        function名称
-        String functionName = "Z_SDL_RH_NOTIFY";
+        String functionName = "Z_OMS_SAP_PO";
 
 //        传入参数
         SAPNotify sapNotify = new SAPNotify();
@@ -190,15 +190,30 @@ public class SAPUtil {
         // 传入参数
         Gson gson = new Gson();
         HashMap<String, String> importParam = new HashMap<>();
-        importParam.put("IJSON", gson.toJson(sapNotify));
+        String[] ebelnList = {"4500083992",
+                "4500083995",
+                "4500083996",
+                "4500083989",
+                "4500083991",
+                "4500084337",
+                "4500084338",
+                "4500084339",
+                "4500084340",
+                "4500084341"};
+
+
+        for (int i = 0; i < ebelnList.length; i++) {
+            importParam.put("IEBELN", ebelnList[i]);
 
 //        传出参数
-        HashMap<String,Object> returnParam = new HashMap<>();
-        returnParam.put("OFLAG","");
-        returnParam.put("OMSG","");
+            HashMap<String,Object> returnParam = new HashMap<>();
+            returnParam.put("RESPONSESTATUS","");
+            returnParam.put("ERRMSG","");
 
 //        调用function
-        HashMap<String, Object> result = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
-        System.out.println(result);
+            HashMap<String, Object> result = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
+            System.out.println((i+1) + "/" + ebelnList.length + "订单号：" + ebelnList[i] + "结果：" + result);
+        }
+
     }
 }

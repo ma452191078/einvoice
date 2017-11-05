@@ -20,9 +20,9 @@
             </pattern>
         </encoder>
         <!--滚动策略-->
-        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-            <!--<fileNamePattern>/Users/majingyuan/mineLog/einvoice/info.%d.log</fileNamePattern>-->
-        <!--</rollingPolicy>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/Users/majingyuan/mineLog/einvoice/info.%d.log</fileNamePattern>
+        </rollingPolicy>
     </appender>
 
     <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -35,14 +35,14 @@
             </pattern>
         </encoder>
         <!--滚动策略-->
-        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-            <!--<fileNamePattern>/Users/majingyuan/mineLog/einvoice/error.%d.log</fileNamePattern>-->
-        <!--</rollingPolicy>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/Users/majingyuan/mineLog/einvoice/error.%d.log</fileNamePattern>
+        </rollingPolicy>
     </appender>
 
     <root level="info">
         <appender-ref ref="conloseLog" />
-        <!--<appender-ref ref="fileInfoLog" />-->
-        <!--<appender-ref ref="fileErrorLog" />-->
+        <appender-ref ref="fileInfoLog" />
+        <appender-ref ref="fileErrorLog" />
     </root>
 </configuration>
