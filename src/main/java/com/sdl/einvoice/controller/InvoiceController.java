@@ -88,7 +88,7 @@ public class InvoiceController {
         String requestJson = gson.toJson(createInvoice);
         log.info("请求报文：" + requestJson);
 
-        String actionUrl = InvoiceConstant.DEV_CREATE_URL;
+        String actionUrl = InvoiceConstant.PRD_CREATE_URL;
         String sign = CertificateUtils.signToBase64(
                 requestJson.getBytes(encode),
                 invoiceConfig.getKeyStorePath(),
@@ -132,7 +132,7 @@ public class InvoiceController {
         }
         String requestJson = gson.toJson(redInvoice);
         log.info("请求报文：" + requestJson);
-        String actionUrl = InvoiceConstant.DEV_CREATE_URL;
+        String actionUrl = InvoiceConstant.PRD_CREATE_URL;
         String sign = CertificateUtils.signToBase64(
                 requestJson.getBytes("UTF-8"),
                 invoiceConfig.getKeyStorePath(),
@@ -189,6 +189,9 @@ public class InvoiceController {
             sapNotify.setRelatedCode(resultInvoice.getInvoices().get(0).getRelatedCode());
             sapNotify.setValidReason(resultInvoice.getInvoices().get(0).getValidReason());
             sapNotify.setValidTime(resultInvoice.getInvoices().get(0).getValidTime());
+            sapNotify.setTAmount(resultInvoice.getInvoices().get(0).getTotalAmount());
+            sapNotify.setNoTax(resultInvoice.getInvoices().get(0).getNoTaxAmount());
+            sapNotify.setTaxAmount(resultInvoice.getInvoices().get(0).getTaxAmount());
 
             // 传入参数
             Gson gson = new Gson();
@@ -203,7 +206,7 @@ public class InvoiceController {
             // 调用RFC
             try {
                 exportParam = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
-                if (exportParam.get("OFLAG").equals("0")){
+                if ("0".equals(exportParam.get("OFLAG"))){
                     result = "success";
                     log.info("sap执行成功，数据已接收");
                     System.out.println("sap执行成功，数据已接收");
@@ -241,7 +244,7 @@ public class InvoiceController {
         }
         String requestJson = gson.toJson(searchInvoice);
         log.info("请求报文：" + requestJson);
-        String actionUrl = InvoiceConstant.DEV_CREATE_URL;
+        String actionUrl = InvoiceConstant.PRD_CREATE_URL;
         String sign = CertificateUtils.signToBase64(
                 requestJson.getBytes("UTF-8"),
                 invoiceConfig.getKeyStorePath(),
@@ -273,6 +276,9 @@ public class InvoiceController {
         sapNotify.setRelatedCode(syncResult.getInvoices().get(0).getRelatedCode());
         sapNotify.setValidReason(syncResult.getInvoices().get(0).getValidReason());
         sapNotify.setValidTime(syncResult.getInvoices().get(0).getValidTime());
+        sapNotify.setTAmount(syncResult.getInvoices().get(0).getTotalAmount());
+        sapNotify.setNoTax(syncResult.getInvoices().get(0).getNoTaxAmount());
+        sapNotify.setTaxAmount(syncResult.getInvoices().get(0).getTaxAmount());
 
         log.info("===============结束==============");
         return gson.toJson(sapNotify);

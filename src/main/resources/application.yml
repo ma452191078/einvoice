@@ -1,9 +1,9 @@
 invoice:
-  taxpayerCode: 12345678909876543
-  taxpayerAddress: 2
-  taxpayerTel: 3
-  taxpayerBankName: 4
-  taxpayerBankAccount: 5
+  taxpayerCode: 9137132959031747XN
+  taxpayerAddress: 临沭县经济开发区
+  taxpayerTel: 0539-6363619
+  taxpayerBankName: 建行临沭支行
+  taxpayerBankAccount: 37001828101050152146
   sign: 0
   appCode: PT000030
 #  keyStorePath: E:\apache-tomcat-7.0.70\webapps\beijingceshi.keystore

@@ -190,16 +190,7 @@ public class SAPUtil {
         // 传入参数
         Gson gson = new Gson();
         HashMap<String, String> importParam = new HashMap<>();
-        String[] ebelnList = {"4500083992",
-                "4500083995",
-                "4500083996",
-                "4500083989",
-                "4500083991",
-                "4500084337",
-                "4500084338",
-                "4500084339",
-                "4500084340",
-                "4500084341"};
+        String[] ebelnList = {};
 
 
         for (int i = 0; i < ebelnList.length; i++) {

@@ -35,4 +35,17 @@ public class SAPNotify {
     private String validReason;
     // 冲红时间
     private String validTime;
+
+    /**
+     * 税价合计金额
+     */
+    private Number tAmount;
+    /**
+     * 不含税金额
+     */
+    private Number noTax;
+    /**
+     * 税额
+     */
+    private Number taxAmount;
 }
