@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * SAP连接工具类
@@ -27,23 +25,23 @@ public class SAPUtil {
     public SAPUtil(SapConfig sapConfig){
 
         Properties connectProperties = new Properties();
-//        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, sapConfig.getAshost());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  sapConfig.getSysnr());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, sapConfig.getClient());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   sapConfig.getUser());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, sapConfig.getPasswd());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   sapConfig.getLang());
-//        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, sapConfig.getPoolCapacity());  //最大空连接数
-//        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    sapConfig.getPeakLimit()); //最大活动连接数
+        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, sapConfig.getAshost());
+        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  sapConfig.getSysnr());
+        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, sapConfig.getClient());
+        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   sapConfig.getUser());
+        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, sapConfig.getPasswd());
+        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   sapConfig.getLang());
+        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, sapConfig.getPoolCapacity());  //最大空连接数
+        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    sapConfig.getPeakLimit()); //最大活动连接数
 
-        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.7.7");
-        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  "10");
-        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "800");
-        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   "SALESYS");
-        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "L1S32JZ");
-        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   "zh");
-        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3");  //最大空连接数
-        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    "10"); //最大活动连接数
+//        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.7.11");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  "00");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "202");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_USER,   "SALESYS");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "L1S32JZ");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   "zh");
+//        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3");  //最大空连接数
+//        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    "10"); //最大活动连接数
         createDataFile(ABAP_AS_POOLED, SUFFIX, connectProperties);
 
     }
@@ -159,7 +157,7 @@ public class SAPUtil {
             importTable.appendRow();
             importTable.setRow(i);
             for (String t : u.keySet()) {
-                importTable.setValue(String.valueOf(u.get(t)), t);
+                importTable.setValue(t, String.valueOf(u.get(t)));
             }
         }
     }
@@ -167,44 +165,64 @@ public class SAPUtil {
 
     public static void main(String[] args) throws JCoException
     {
-        SAPUtil sapUtil = new SAPUtil(null);
-
-//        function名称
-        String functionName = "Z_OMS_SAP_PO";
-
-//        传入参数
-        SAPNotify sapNotify = new SAPNotify();
-//        sapNotify.setSerialNo("344dc9fa-7461-4264-a2a5-eaa826c415ff");
-//        sapNotify.setCode("0");
-//        sapNotify.setMessage("处理成功。");
-//        sapNotify.setOrderNo(null);
-//        sapNotify.setOriCode("13702161508297700540");
-//        sapNotify.setStatus("1");
-//        sapNotify.setGentime("2017-10-18 11:35:00");
-//        sapNotify.setPdfUrl("http://www.chinaeinv.com:980/pdfUnsigned.jspa?c=3822D479A8B3DFB722BF");
-//        sapNotify.setViewUrl("http://www.chinaeinv.com:980/p.jspa?c=3822D479A8B3DFB722BF");
-//        sapNotify.setRelatedCode(null);
-//        sapNotify.setValidReason(null);
-//        sapNotify.setValidTime(null);
-
-        // 传入参数
-        Gson gson = new Gson();
-        HashMap<String, String> importParam = new HashMap<>();
-        String[] ebelnList = {};
-
-
-        for (int i = 0; i < ebelnList.length; i++) {
-            importParam.put("IEBELN", ebelnList[i]);
-
-//        传出参数
-            HashMap<String,Object> returnParam = new HashMap<>();
-            returnParam.put("RESPONSESTATUS","");
-            returnParam.put("ERRMSG","");
-
-//        调用function
-            HashMap<String, Object> result = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
-            System.out.println((i+1) + "/" + ebelnList.length + "订单号：" + ebelnList[i] + "结果：" + result);
-        }
+//        SAPUtil sapUtil = new SAPUtil(null);
+//
+////        function名称
+//        String functionName = "Z_WMS_SAP_PRODUCTION_GOODSMOVE";
+//
+////        传入参数
+//        SAPNotify sapNotify = new SAPNotify();
+////        sapNotify.setSerialNo("344dc9fa-7461-4264-a2a5-eaa826c415ff");
+////        sapNotify.setCode("0");
+////        sapNotify.setMessage("处理成功。");
+////        sapNotify.setOrderNo(null);
+////        sapNotify.setOriCode("13702161508297700540");
+////        sapNotify.setStatus("1");
+////        sapNotify.setGentime("2017-10-18 11:35:00");
+////        sapNotify.setPdfUrl("http://www.chinaeinv.com:980/pdfUnsigned.jspa?c=3822D479A8B3DFB722BF");
+////        sapNotify.setViewUrl("http://www.chinaeinv.com:980/p.jspa?c=3822D479A8B3DFB722BF");
+////        sapNotify.setRelatedCode(null);
+////        sapNotify.setValidReason(null);
+////        sapNotify.setValidTime(null);
+//
+//        // 传入参数
+//        Gson gson = new Gson();
+//        HashMap<String, String> importParam = new HashMap<>();
+//        String[] ebelnList = {"1"};
+//
+//
+//        for (int i = 0; i < ebelnList.length; i++) {
+////            importParam.put("IEBELN", ebelnList[i]);
+//
+//            //table
+//            HashMap<String, Object> tableItem = new HashMap<>();
+//            tableItem.put("ZID","5D71938A595714BAE050007F010034A5");
+//            tableItem.put("AUFNR","001000159042");
+//            tableItem.put("POSNR","4");
+//            tableItem.put("WERKS","2003");
+//            tableItem.put("MATNR","000000000000141601");
+//            tableItem.put("LGORTO","1301");
+//            tableItem.put("LGORTI","2303");
+//            tableItem.put("MENGE", "0.000005");
+//            tableItem.put("MEINS","");
+//            tableItem.put("CHARG","1");
+//            tableItem.put("SGTXT","");
+//            tableItem.put("WMSID","MR1711080061");
+//            List<HashMap<String, Object>> itemList = new ArrayList<>();
+//            itemList.add(tableItem);
+//            HashMap<String, List<HashMap<String, Object>>> table = new HashMap<>();
+//
+//            table.put("ZTOT",itemList);
+//
+////        传出参数
+//            HashMap<String,Object> returnParam = new HashMap<>();
+//            returnParam.put("RESPONSESTATUS","");
+//            returnParam.put("ERRMSG","");
+//
+////        调用function
+//            HashMap<String, Object> result = sapUtil.executeSapFun(functionName,importParam,table,returnParam);
+//            System.out.println((i+1) + "/" + ebelnList.length + "订单号：" + ebelnList[i] + "结果：" + result);
+//        }
 
     }
 }

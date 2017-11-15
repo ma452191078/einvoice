@@ -1,0 +1,27 @@
+invoice:
+  taxpayerCode: 12345678909876543
+  taxpayerAddress: 2
+  taxpayerTel: 3
+  taxpayerBankName: 4
+  taxpayerBankAccount: 5
+  sign: 0
+  appCode: PT000030
+#  keyStorePath: E:\apache-tomcat-7.0.70\webapps\beijingceshi.keystore
+#  keyStorePath: /Users/majingyuan/mineLog/beijingceshi.keystore
+  keyStorePath: /usr/local/tomcat8/webapps/beijingceshi.keystore
+  keyStoreAbner: PT000030
+  keyStorePassWord: 123456
+
+catalogCode:
+  FHF: 1070204070000000000
+  YJF: 1070205010000000000
+
+sapconfig:
+  client: 202
+  ashost: 192.168.7.11
+  sysnr: 00
+  user: MAJY
+  passwd: 20140254
+  lang: zh
+  poolCapacity: 3
+  peakLimit: 00

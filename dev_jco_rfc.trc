@@ -123,3 +123,58 @@ COUNTER     2
     Return code: RFC_FAILURE(1)
     error group: 102
     key: RFC_ERROR_COMMUNICATION
+
+**** Error file opened at 20171108 215527 China Standard Time Rel 3.0.2 Hotfix (2009-09-01) [720.612]
+Error:  >Wed Nov 08 21:55:27,215<    
+RfcException: [null]
+    message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=ABAP_AS_WITH_POOL ASHOST=192.168.7.11 SYSNR=10 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host MAJy-3.local
+ERROR       partner '192.168.7.11:3310' not reached
+TIME        Wed Nov  8 21:55:27 2017
+RELEASE     720
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3283
+DETAIL      NiPConnect2: 192.168.7.11:3310
+SYSTEM CALL connect
+ERRNO       61
+ERRNO TEXT  Connection refused
+COUNTER     3
+
+    Return code: RFC_FAILURE(1)
+    error group: 102
+    key: RFC_ERROR_COMMUNICATION
+
+**** Error file opened at 20171108 215613 China Standard Time Rel 3.0.2 Hotfix (2009-09-01) [720.612]
+Error:  >Wed Nov 08 21:56:13,626<    
+RfcException: [null]
+    message: Connect to SAP gateway failed
+Connection parameters: TYPE=A DEST=ABAP_AS_WITH_POOL ASHOST=192.168.7.11 SYSNR=10 PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host MAJy-3.local
+ERROR       partner '192.168.7.11:3310' not reached
+TIME        Wed Nov  8 21:56:13 2017
+RELEASE     720
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3283
+DETAIL      NiPConnect2: 192.168.7.11:3310
+SYSTEM CALL connect
+ERRNO       61
+ERRNO TEXT  Connection refused
+COUNTER     3
+
+    Return code: RFC_FAILURE(1)
+    error group: 102
+    key: RFC_ERROR_COMMUNICATION
+
+**** Error file opened at 20171108 215719 China Standard Time Rel 3.0.2 Hotfix (2009-09-01) [720.612]
+Error:  >Wed Nov 08 21:57:19,167<    >RfcGetException rc (7) message: Syntax error in program SAPLZ_SDL_SLPS                          .
+<RfcGetException
+

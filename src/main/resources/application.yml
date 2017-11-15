@@ -1,27 +1,4 @@
-invoice:
-  taxpayerCode: 9137132959031747XN
-  taxpayerAddress: 临沭县经济开发区
-  taxpayerTel: 0539-6363619
-  taxpayerBankName: 建行临沭支行
-  taxpayerBankAccount: 37001828101050152146
-  sign: 0
-  appCode: PT000030
-#  keyStorePath: E:\apache-tomcat-7.0.70\webapps\beijingceshi.keystore
-#  keyStorePath: /Users/majingyuan/mineLog/beijingceshi.keystore
-  keyStorePath: /usr/local/tomcat8/webapps/beijingceshi.keystore
-  keyStoreAbner: PT000030
-  keyStorePassWord: 123456
+spring:
+  profiles:
+    active: prd
 
-catalogCode:
-  FHF: 1070204070000000000
-  YJF: 1070205010000000000
-
-sapconfig:
-  client: 202
-  ashost: 192.168.7.11
-  sysnr: 00
-  user: SALESYS
-  passwd: L1S32JZ
-  lang: zh
-  poolCapacity: 3
-  peakLimit: 10
