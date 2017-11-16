@@ -11,9 +11,9 @@ public interface InvoiceConstant {
     String catalogCodeYJF = "1070205010000000000";
 
     //正式
-    String PRD_CREATE_URL = "https://www.chinaeinv.com/igs/api/invoiceApi.jspa";
+//    String PRD_CREATE_URL = "https://www.chinaeinv.com/igs/api/invoiceApi.jspa";
     //测试
-//    String PRD_CREATE_URL = "http://www.chinaeinv.com:980/igs/api/invoiceApi.jspa";
+    String PRD_CREATE_URL = "http://www.chinaeinv.com:980/igs/api/invoiceApi.jspa";
 
     String APPCODE = "APPCODE";
     String CMDNAME = "CMDNAME";
