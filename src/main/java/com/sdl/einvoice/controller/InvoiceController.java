@@ -267,18 +267,21 @@ public class InvoiceController {
         sapNotify.setSerialNo(syncResult.getSerialNo());
         sapNotify.setCode(syncResult.getCode());
         sapNotify.setMessage(syncResult.getMessage());
-        sapNotify.setOrderNo(syncResult.getInvoices().get(0).getOrdreNo());
-        sapNotify.setOriCode(syncResult.getInvoices().get(0).getCode());
-        sapNotify.setStatus(syncResult.getInvoices().get(0).getStatus());
-        sapNotify.setGentime(syncResult.getInvoices().get(0).getGenerateTime());
-        sapNotify.setPdfUrl(syncResult.getInvoices().get(0).getPdfUnsignedUrl());
-        sapNotify.setViewUrl(syncResult.getInvoices().get(0).getViewUrl());
-        sapNotify.setRelatedCode(syncResult.getInvoices().get(0).getRelatedCode());
-        sapNotify.setValidReason(syncResult.getInvoices().get(0).getValidReason());
-        sapNotify.setValidTime(syncResult.getInvoices().get(0).getValidTime());
-        sapNotify.setTAmount(syncResult.getInvoices().get(0).getTotalAmount());
-        sapNotify.setNoTax(syncResult.getInvoices().get(0).getNoTaxAmount());
-        sapNotify.setTaxAmount(syncResult.getInvoices().get(0).getTaxAmount());
+        if (syncResult.getInvoices() != null && syncResult.getInvoices().size() > 0){
+            sapNotify.setOrderNo(syncResult.getInvoices().get(0).getOrdreNo());
+            sapNotify.setOriCode(syncResult.getInvoices().get(0).getCode());
+            sapNotify.setStatus(syncResult.getInvoices().get(0).getStatus());
+            sapNotify.setGentime(syncResult.getInvoices().get(0).getGenerateTime());
+            sapNotify.setPdfUrl(syncResult.getInvoices().get(0).getPdfUnsignedUrl());
+            sapNotify.setViewUrl(syncResult.getInvoices().get(0).getViewUrl());
+            sapNotify.setRelatedCode(syncResult.getInvoices().get(0).getRelatedCode());
+            sapNotify.setValidReason(syncResult.getInvoices().get(0).getValidReason());
+            sapNotify.setValidTime(syncResult.getInvoices().get(0).getValidTime());
+            sapNotify.setTAmount(syncResult.getInvoices().get(0).getTotalAmount());
+            sapNotify.setNoTax(syncResult.getInvoices().get(0).getNoTaxAmount());
+            sapNotify.setTaxAmount(syncResult.getInvoices().get(0).getTaxAmount());
+        }
+
 
         log.info("===============结束==============");
         return gson.toJson(sapNotify);

@@ -17,7 +17,7 @@ catalogCode:
 sapconfig:
   client: 800
   ashost: 192.168.7.7
-  sysnr: 00
+  sysnr: 10
   user: SALESYS
   passwd: L1S32JZ
   lang: zh
