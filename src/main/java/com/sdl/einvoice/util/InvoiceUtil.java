@@ -6,8 +6,8 @@ import java.util.UUID;
 
 /**
  * 工具类
- * @Author majingyuan
- * @Date Create in 2017/9/26 15:35
+ * @author majingyuan
+ * @date Create in 2017/9/26 15:35
  */
 public class InvoiceUtil {
 

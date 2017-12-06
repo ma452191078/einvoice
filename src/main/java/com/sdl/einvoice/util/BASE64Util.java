@@ -5,8 +5,8 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 /**
- * @Author majingyuan
- * @Date Create in 2017/9/26 16:29
+ * @author majingyuan
+ * @date Create in 2017/9/26 16:29
  */
 public class BASE64Util {
 

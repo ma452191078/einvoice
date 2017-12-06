@@ -6,8 +6,8 @@ import java.util.List;
 
 /**
  * SAP异步通知
- * @Author majingyuan
- * @Date Create in 2017/9/28 15:45
+ * @author majingyuan
+ * @date Create in 2017/9/28 15:45
  */
 @Data
 public class SAPNotify {

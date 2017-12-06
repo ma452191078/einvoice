@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * 瑞宏接口-通知信息
+ * @author majingyuan
  * Created by majingyuan on 2017/9/26.
  */
 @Data

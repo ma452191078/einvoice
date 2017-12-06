@@ -11,8 +11,8 @@ import java.util.UUID;
 
 /**
  * MQ的消费者
- * @Author majingyuan
- * @Date Create in 2017/12/1 15:35
+ * @author majingyuan
+ * @date Create in 2017/12/1 15:35
  */
 @Slf4j
 public class RocketMQConsumer {

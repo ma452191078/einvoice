@@ -4,8 +4,8 @@ import lombok.Data;
 
 /**
  * 查询接口标准属性
- * @Author majingyuan
- * @Date Create in 2017/10/28 09:59
+ * @author majingyuan
+ * @date Create in 2017/10/28 09:59
  */
 @Data
 public class Criteria {

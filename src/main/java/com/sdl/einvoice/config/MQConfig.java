@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * 消息队列配置文件
- * @Author majingyuan
- * @Date Create in 2017/12/1 16:51
+ * @author majingyuan
+ * @date Create in 2017/12/1 16:51
  */
 
 @Data

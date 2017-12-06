@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 发票配置信息
+ * @author majingyuan
  */
 @Data
 @Component

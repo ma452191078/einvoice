@@ -7,7 +7,8 @@ import java.util.List;
 
 /**
  * 瑞宏接口-发票类
- * Created by majingyuan on 2017/9/26.
+ * @author majingyuan
+ * @date  2017/9/26.
  */
 @Data
 public class RHInvoice {

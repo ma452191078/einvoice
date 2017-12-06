@@ -11,8 +11,8 @@ import java.util.UUID;
 
 /**
  * 生产者
- * @Author majingyuan
- * @Date Create in 2017/12/1 15:43
+ * @author majingyuan
+ * @date Create in 2017/12/1 15:43
  */
 @Slf4j
 public class RocketMQProducer {

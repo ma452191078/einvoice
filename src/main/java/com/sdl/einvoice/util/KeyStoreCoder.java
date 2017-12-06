@@ -10,7 +10,8 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
- * Created by Administrator on 2017-01-17.
+ * @author majingyuan
+ * @date 2017-12-06 09:47:26
  */
 public class KeyStoreCoder extends Coder {
     /**

@@ -4,15 +4,28 @@ import javax.net.ssl.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
- * 网络请求工具类
- * @Author majingyuan
- * @Date Create in 2017/9/27 08:11
+ * @author majingyuan
+ * @date 2017-12-06 09:46:59
+ * 进行http访问的基本类
  */
 public class HttpUtil {
+
+    private static final String DEFAULT_CHARSET = "UTF-8";
+
+    private static final String METHOD_POST = "POST";
+
+    private static final String METHOD_GET = "GET";
+
+    private static final int CONNECTTIMEOUT = 5000;
+
+    private static final int READTIMEOUT = 5000;
 
     private static class DefaultTrustManager implements X509TrustManager {
 
@@ -28,82 +41,185 @@ public class HttpUtil {
                 throws java.security.cert.CertificateException {
         }
     }
-    /**
-     * 向指定 URL 发送POST方法的请求
-     *
-     * @param url
-     *            发送请求的 URL
-     * @param param
-     *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
-     * @return 所代表远程资源的响应结果
-     */
-    public static String sendPost(String url, String param) {
-        PrintWriter out = null;
-        BufferedReader in = null;
-        String result = "";
 
-        try {
-//            url = url.replaceAll("\r|\n", "");
-            URL realUrl = new URL(url);
+    private static HttpURLConnection getConnection(URL url, String method)
+            throws IOException {
 
-//            SSLContext ctx = SSLContext.getInstance("TLS");
-//            ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() },
-//                    new SecureRandom());
-//
-//            HttpsURLConnection connHttps = (HttpsURLConnection) realUrl.openConnection();
-//            connHttps.setSSLSocketFactory(ctx.getSocketFactory());
-//            connHttps.setHostnameVerifier(new HostnameVerifier() {
-//
-//                public boolean verify(String hostname, SSLSession session) {
-//                    return true;// 默认都认证通过
-//                }
-//            });
-//            HttpURLConnection httpConn = connHttps;
-            // 打开和URL之间的连接
-            HttpURLConnection httpConn = (HttpURLConnection) realUrl.openConnection();
-            // //设置连接属性
-            httpConn.setDoOutput(true);// 使用 URL 连接进行输出
-            httpConn.setDoInput(true);// 使用 URL 连接进行输入
-            httpConn.setUseCaches(false);// 忽略缓存
-            httpConn.setRequestMethod("POST");// 设置URL请求方法
-
-            // 设置请求属性
-            // 获得数据字节数据，请求数据流的编码，必须和下面服务器端处理请求流的编码一致
-            httpConn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            httpConn.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
-            httpConn.setDoInput(true);
-            httpConn.setDoOutput(true);
-            httpConn.setRequestProperty("User-Agent", "einv-restclient-java-3.0");
-
-            // 建立输出流，并写入数据
-            OutputStream outputStream = httpConn.getOutputStream();
-            outputStream.write(param.getBytes());
-            outputStream.flush();
-            // 获得响应状态
-            int responseCode = httpConn.getResponseCode();
-
-            if (HttpURLConnection.HTTP_OK == responseCode) {// 连接成功
-                // 当正确响应时处理数据
-                StringBuffer sb = new StringBuffer();
-                String readLine;
-                BufferedReader responseReader;
-                // 处理响应流，必须与服务器响应流输出的编码一致
-                responseReader = new BufferedReader(new InputStreamReader(httpConn.getInputStream(), "UTF-8"));
-                while ((readLine = responseReader.readLine()) != null) {
-                    sb.append(readLine).append("\n");
-                }
-                responseReader.close();
-                //tv.setText(sb.toString());
-                result = sb.toString();
-                //System.out.println(sb.toString());
+        HttpURLConnection conn;
+        if ("https".equals(url.getProtocol())) {
+            SSLContext ctx;
+            try {
+                ctx = SSLContext.getInstance("TLS");
+                ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() },
+                        new SecureRandom());
+            } catch (Exception e) {
+                throw new IOException(e);
             }
-        } catch (Exception e) {
-            System.out.println("发送 POST 请求出现异常！"+e);
-            e.printStackTrace();
+            HttpsURLConnection connHttps = (HttpsURLConnection) url.openConnection();
+            connHttps.setSSLSocketFactory(ctx.getSocketFactory());
+            connHttps.setHostnameVerifier(new HostnameVerifier() {
+
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;// 默认都认证通过
+                }
+            });
+            conn = connHttps;
+        } else {
+            conn = (HttpURLConnection) url.openConnection();
+        }
+        conn.setRequestMethod(method);
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+        conn.setRequestProperty("User-Agent", "einv-restclient-java-3.0");
+        conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+        conn.setRequestProperty("Connection", "Keep-Alive");
+        return conn;
+
+    }
+
+    /**
+     * 通过get方法访问
+     * 
+     * @param url 访问的url地址
+     * @param urlParams 请求需要的参数
+     * @return 返回请求响应的数据
+     * @throws IOException
+     */
+    public static String doGet(String url, Map<String, String> urlParams)
+            throws IOException {
+        if (isEmpty(url)) {
+            throw new IllegalArgumentException("The parameter 'url' can not be null or blank.");
+        }
+        url += buildQuery(urlParams, DEFAULT_CHARSET);
+        HttpURLConnection conn = getConnection(new URL(url), METHOD_GET);
+        return getResponseAsString(conn);
+    }
+
+    /**
+     * 
+     * @param url api请求的权路径url地址
+     * @param urlParams 请求的参数
+     * @param requestJson 请求报文
+     * @return 请求响应
+     * @throws IOException
+     */
+    public static String doPost(String url, Map<String, String> urlParams, String requestJson) throws IOException {
+        return doPost(url, urlParams, requestJson, CONNECTTIMEOUT, READTIMEOUT);
+    }
+
+    /**
+     *
+     * 通过post方法请求数据
+     *
+     * @param url 请求的url地址
+     * @param urlParams 请求的参数
+     * @param requestJson 请求报文
+     * @param connectTimeOut 请求连接过期时间
+     * @param readTimeOut 请求读取过期时间
+     * @return 请求响应
+     * @throws IOException
+     */
+    public static String doPost(String url, Map<String, String> urlParams, String requestJson,
+            int connectTimeOut, int readTimeOut) throws IOException {
+        if (isEmpty(url)) {
+            throw new IllegalArgumentException("The parameter 'url' can not be null or blank.");
+        }
+        url += buildQuery(urlParams, DEFAULT_CHARSET);
+        System.out.println(url);
+        HttpURLConnection conn = getConnection(new URL(url), METHOD_POST);
+        conn.setConnectTimeout(connectTimeOut);
+        conn.setReadTimeout(readTimeOut);
+        conn.getOutputStream().write(requestJson.getBytes(DEFAULT_CHARSET));
+        return getResponseAsString(conn);
+    }
+
+    /**
+     * 
+     * @param params 请求参数
+     * @return 构建query
+     */
+    public static String buildQuery(Map<String, String> params, String charset) throws UnsupportedEncodingException {
+        if (params == null || params.isEmpty()) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Entry<String, String> entry : params.entrySet()) {
+            if (first) {
+                sb.append("?");
+                first = false;
+            } else {
+                sb.append("&");
+            }
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if (areNotEmpty(key, value)) {
+                sb.append(key).append("=").append(URLEncoder.encode(value, charset));
+            }
+        }
+        return sb.toString();
+
+    }
+
+    private static String getResponseAsString(HttpURLConnection conn) throws IOException {
+        InputStream es = conn.getErrorStream();
+        if (es == null) {
+            return getStreamAsString(conn.getInputStream(), DEFAULT_CHARSET);
+        } else {
+            String msg = getStreamAsString(es, DEFAULT_CHARSET);
+            if (isEmpty(msg)) {
+                throw new IOException(conn.getResponseCode() + " : " + conn.getResponseMessage());
+            } else {
+                throw new IOException(msg);
+            }
         }
 
+    }
 
+    private static String getStreamAsString(InputStream input, String charset) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader bf = null;
+        try {
+            bf = new BufferedReader(new InputStreamReader(input, charset));
+            String str;
+            while ((str = bf.readLine()) != null) {
+                sb.append(str);
+            }
+            return sb.toString();
+        } finally {
+            if (bf != null) {
+                bf.close();
+            }
+        }
 
-        return result;
+    }
+
+    /**
+     * 判断字符串为空
+     *
+     * @param str 字符串信息
+     * @return true or false
+     */
+    private static boolean isEmpty(String str) {
+        return str == null || str.trim().length() == 0;
+    }
+
+    /**
+     * 判断字符数组，不为空
+     *
+     * @param values 字符数组
+     * @return true or false
+     */
+    public static boolean areNotEmpty(String... values) {
+        if (values == null || values.length == 0) {
+            return false;
+        }
+
+        for (String value : values) {
+            if (isEmpty(value)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

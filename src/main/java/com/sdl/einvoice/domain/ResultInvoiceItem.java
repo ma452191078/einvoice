@@ -5,8 +5,8 @@ import lombok.Data;
 
 /**
  * 报文发票项目
- * @Author majingyuan
- * @Date Create in 2017/9/27 08:41
+ * @author majingyuan
+ * @date Create in 2017/9/27 08:41
  */
 @Data
 public class ResultInvoiceItem {

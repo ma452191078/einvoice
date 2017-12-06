@@ -2,17 +2,26 @@ package com.sdl.einvoice.constant;
 
 /**
  * 发票静态变量
+ * @author majingyuan
  */
 public interface InvoiceConstant {
 
-//    复合肥
+    /**
+     * 复合肥
+     */
     String catalogCodeFHF = "1070204070000000000";
-//    有机肥
+    /**
+     * 有机肥
+     */
     String catalogCodeYJF = "1070205010000000000";
 
-    //正式
+    /**
+     * 正式
+     */
     String PRD_CREATE_URL = "https://www.chinaeinv.com/igs/api/invoiceApi.jspa";
-    //测试
+    /**
+     * 测试
+     */
 //    String PRD_CREATE_URL = "http://www.chinaeinv.com:980/igs/api/invoiceApi.jspa";
 
     String APPCODE = "APPCODE";

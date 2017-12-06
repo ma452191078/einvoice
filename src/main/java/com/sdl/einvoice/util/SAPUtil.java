@@ -14,8 +14,8 @@ import java.util.*;
 
 /**
  * SAP连接工具类
- * @Author majingyuan
- * @Date Create in 2017/9/29 10:06
+ * @author majingyuan
+ * @date Create in 2017/9/29 10:06
  */
 public class SAPUtil {
 

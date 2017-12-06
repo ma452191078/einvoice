@@ -6,8 +6,8 @@ import java.util.List;
 
 /**
  * 回调报文
- * @Author majingyuan
- * @Date Create in 2017/9/26 17:02
+ * @author majingyuan
+ * @date Create in 2017/9/26 17:02
  */
 @Data
 public class SyncResult {

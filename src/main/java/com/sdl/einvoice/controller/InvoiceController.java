@@ -1,7 +1,6 @@
 package com.sdl.einvoice.controller;
 
 import com.google.gson.Gson;
-import com.sap.conn.jco.JCoException;
 import com.sdl.einvoice.config.InvoiceConfig;
 import com.sdl.einvoice.config.SapConfig;
 import com.sdl.einvoice.constant.InvoiceConstant;
@@ -106,7 +105,7 @@ public class InvoiceController {
         vars.put("cmdName", URLEncoder.encode(InvoiceConstant.CMD_CREATE, encode));
         vars.put("sign", URLEncoder.encode(sign, encode));
         // 发送请求
-        String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
+        String responseJson = HttpUtil.doPost(actionUrl, vars, requestJson, 10000, 10000);
         log.info("请求URL：" + actionUrl);
         log.info("响应报文：" + responseJson);
 
@@ -141,7 +140,7 @@ public class InvoiceController {
         log.info("请求报文：" + requestJson);
         String actionUrl = InvoiceConstant.PRD_CREATE_URL;
         String sign = CertificateUtils.signToBase64(
-                requestJson.getBytes("UTF-8"),
+                requestJson.getBytes(encode),
                 invoiceConfig.getKeyStorePath(),
                 invoiceConfig.getKeyStoreAbner(),
                 invoiceConfig.getKeyStorePassWord()
@@ -153,7 +152,7 @@ public class InvoiceController {
         vars.put("sign", URLEncoder.encode(sign, encode));
 
         // 发送请求
-        String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
+        String responseJson = HttpUtil.doPost(actionUrl, vars, requestJson, 10000, 10000);
         log.info("请求URL:" + actionUrl);
         log.info("响应报文：" + responseJson);
 
@@ -223,7 +222,7 @@ public class InvoiceController {
         log.info("请求报文：" + requestJson);
         String actionUrl = InvoiceConstant.PRD_CREATE_URL;
         String sign = CertificateUtils.signToBase64(
-                requestJson.getBytes("UTF-8"),
+                requestJson.getBytes(encode),
                 invoiceConfig.getKeyStorePath(),
                 invoiceConfig.getKeyStoreAbner(),
                 invoiceConfig.getKeyStorePassWord()
@@ -233,7 +232,7 @@ public class InvoiceController {
         vars.put("appCode", URLEncoder.encode(invoiceConfig.getAppCode(), encode));
         vars.put("cmdName", URLEncoder.encode(InvoiceConstant.CMD_SEARCH, encode));
         vars.put("sign", URLEncoder.encode(sign, encode));
-        String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
+        String responseJson = HttpUtil.doPost(actionUrl, vars, requestJson, 10000, 10000);
         log.info("请求URL:" + actionUrl);
         log.info("响应报文：" + responseJson);
 

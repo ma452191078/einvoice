@@ -7,7 +7,8 @@ import java.util.Map;
 
 /**
  * 瑞宏接口-新开发票
- * Created by majingyuan on 2017/9/26.
+ * @author majingyuan
+ * @date Created by majingyuan on 2017/9/26.
  */
 @Data
 public class RHCreateInvoice {

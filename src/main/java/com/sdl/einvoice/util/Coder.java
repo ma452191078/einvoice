@@ -4,7 +4,8 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 /**
- * Created by Administrator on 2017-01-17.
+ * @author majingyuan
+ * @date 2017-01-17.
  */
 public abstract class Coder {
     /**

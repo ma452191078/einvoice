@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * 瑞宏接口-冲红发票
+ * @author majingyuan
  * Created by majingyuan on 2017/9/26.
  */
 @Data

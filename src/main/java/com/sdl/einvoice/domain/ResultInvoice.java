@@ -8,8 +8,8 @@ import java.util.Map;
 
 /**
  * 报文发票
- * @Author majingyuan
- * @Date Create in 2017/9/27 08:40
+ * @author majingyuan
+ * @date Create in 2017/9/27 08:40
  */
 @Data
 public class ResultInvoice {
