@@ -6,8 +6,10 @@ import com.sdl.einvoice.config.InvoiceConfig;
 import com.sdl.einvoice.config.SapConfig;
 import com.sdl.einvoice.constant.InvoiceConstant;
 import com.sdl.einvoice.domain.*;
+import com.sdl.einvoice.mq.RocketMQProducer;
 import com.sdl.einvoice.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.common.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +24,8 @@ import java.util.Map;
 
 /**
  * 发票操作
- * @Author majingyuan
- * @Date Create in 2017/9/26 15:31
+ * @author majingyuan
+ * @date Create in 2017/9/26 15:31
  */
 
 @RestController
@@ -39,14 +41,17 @@ public class InvoiceController {
     @Autowired
     private SapConfig sapConfig;
 
+    @Autowired
+    private RocketMQProducer rocketMQProducer;
+
     /**
      * 创建发票
-     * @param rhInvoice
-     * @return
+     * @param rhInvoice 开票数据
+     * @return 返回开票信息给SAP
      */
     @RequestMapping("/createInvoice")
     public String createInvoice(@RequestBody RHInvoice rhInvoice) throws Exception {
-        log.info("===============史丹利电子发票==============");
+        log.info("===============史丹利电子发票===============");
         log.info("==============开始执行开票操作==============");
         Map<String, Object> result = new HashMap<>();
 
@@ -83,11 +88,11 @@ public class InvoiceController {
         createInvoice.setSerialNo(InvoiceUtil.getSerialNo());
         createInvoice.setPostTime(InvoiceUtil.getPostTime());
 
-//        转换为json
+        // 转换为json
         Gson gson = new Gson();
         String requestJson = gson.toJson(createInvoice);
         log.info("请求报文：" + requestJson);
-
+        //请求接口参数拼装
         String actionUrl = InvoiceConstant.PRD_CREATE_URL;
         String sign = CertificateUtils.signToBase64(
                 requestJson.getBytes(encode),
@@ -100,13 +105,13 @@ public class InvoiceController {
         vars.put("appCode", URLEncoder.encode(invoiceConfig.getAppCode(), encode));
         vars.put("cmdName", URLEncoder.encode(InvoiceConstant.CMD_CREATE, encode));
         vars.put("sign", URLEncoder.encode(sign, encode));
-
+        // 发送请求
         String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
         log.info("请求URL：" + actionUrl);
         log.info("响应报文：" + responseJson);
 
         AsyncResult syncResult = gson.fromJson(responseJson, AsyncResult.class);
-//
+        // 返回SAP结果
         result.put("SERIALNO", syncResult.getSerialNo());
         result.put("CODE", syncResult.getCode());
         result.put("MESSAGE", syncResult.getMessage());
@@ -116,15 +121,17 @@ public class InvoiceController {
 
     /**
      * 红冲发票接口
-     * @return
+     * @param redInvoice 红冲数据
+     * @return 返回开票信息给SAP
+     * @throws Exception
      */
     @RequestMapping("/writeoffInvoice")
     public String writeoffInvoice(@RequestBody RHRedInvoice redInvoice) throws Exception {
         Gson gson = new Gson();
-        log.info("===============史丹利电子发票==============");
+        log.info("===============史丹利电子发票===============");
         log.info("==============开始执行红冲操作==============");
         Map<String, Object> result = new HashMap<>();
-
+        // 拼装请求参数
         redInvoice.setSerialNo(InvoiceUtil.getSerialNo());
         redInvoice.setPostTime(InvoiceUtil.getPostTime());
         if(redInvoice.getItems() != null && redInvoice.getItems().size() == 0){
@@ -144,12 +151,16 @@ public class InvoiceController {
         vars.put("appCode", URLEncoder.encode(invoiceConfig.getAppCode(), encode));
         vars.put("cmdName", URLEncoder.encode(InvoiceConstant.CMD_RED, encode));
         vars.put("sign", URLEncoder.encode(sign, encode));
+
+        // 发送请求
         String responseJson = HttpUtil1.doPost(actionUrl, vars, requestJson, 10000, 10000);
         log.info("请求URL:" + actionUrl);
         log.info("响应报文：" + responseJson);
 
+        // 解析JSON
         AsyncResult syncResult = gson.fromJson(responseJson, AsyncResult.class);
 
+        //返回结果给SAP
         result.put("SERIALNO", syncResult.getSerialNo());
         result.put("CODE", syncResult.getCode());
         result.put("MESSAGE", syncResult.getMessage());
@@ -160,70 +171,36 @@ public class InvoiceController {
 
     /**
      * 发票处理回调接口
-     * @param resultInvoice
-     * @return
+     * @param resultInvoice 回调参数
+     * @return 成功返回success，未返回或返回其他值进行3次重试
      */
     @RequestMapping("/notifyStanley")
     public String notifyStanley(@RequestBody SyncResult resultInvoice){
         String result = "failed";
-        log.info("===============史丹利电子发票==============");
+        String MESSAGE_OK = "OK";
+        log.info("===============史丹利电子发票================");
         log.info("===============开始执行回调操作==============");
         log.info("回调报文：{}",resultInvoice.toString());
         if (resultInvoice.getInvoices() != null && !"".equals(resultInvoice.getCode())){
-            // 发票处理成功
-            SAPUtil sapUtil = new SAPUtil(sapConfig);
-            //function名称
-            String functionName = "Z_SDL_RH_NOTIFY";
-            HashMap<String, Object> exportParam;
-            // 组装数据
-            SAPNotify sapNotify = new SAPNotify();
-            sapNotify.setSerialNo(resultInvoice.getSerialNo());
-            sapNotify.setCode(resultInvoice.getCode());
-            sapNotify.setMessage(resultInvoice.getMessage());
-            sapNotify.setOrderNo(resultInvoice.getInvoices().get(0).getOrdreNo());
-            sapNotify.setOriCode(resultInvoice.getInvoices().get(0).getCode());
-            sapNotify.setStatus(resultInvoice.getInvoices().get(0).getStatus());
-            sapNotify.setGentime(resultInvoice.getInvoices().get(0).getGenerateTime());
-            sapNotify.setPdfUrl(resultInvoice.getInvoices().get(0).getPdfUnsignedUrl());
-            sapNotify.setViewUrl(resultInvoice.getInvoices().get(0).getViewUrl());
-            sapNotify.setRelatedCode(resultInvoice.getInvoices().get(0).getRelatedCode());
-            sapNotify.setValidReason(resultInvoice.getInvoices().get(0).getValidReason());
-            sapNotify.setValidTime(resultInvoice.getInvoices().get(0).getValidTime());
-            sapNotify.setTAmount(resultInvoice.getInvoices().get(0).getTotalAmount());
-            sapNotify.setNoTax(resultInvoice.getInvoices().get(0).getNoTaxAmount());
-            sapNotify.setTaxAmount(resultInvoice.getInvoices().get(0).getTaxAmount());
-
-            // 传入参数
+            // 解析数据
+            SAPNotify sapNotify = convertResultToSapnotify(resultInvoice);
+            // 发送给队列
             Gson gson = new Gson();
-            HashMap<String, String> importParam = new HashMap<>();
-            importParam.put("IJSON", gson.toJson(sapNotify));
-
-            // 传出参数
-            HashMap<String,Object> returnParam = new HashMap<>();
-            returnParam.put("OFLAG","");
-            returnParam.put("OMSG","");
-
-            // 调用RFC
-            try {
-                exportParam = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
-                if ("0".equals(exportParam.get("OFLAG"))){
-                    result = "success";
-                    log.info("sap执行成功，数据已接收");
-                    System.out.println("sap执行成功，数据已接收");
-                }else {
-                    log.info("sap执行失败，{}",exportParam.get("OMSG"));
-                    System.out.println("sap执行失败，" + exportParam.get("OMSG"));
-                }
-            } catch (JCoException e) {
-                log.info("sap执行失败，{}",e.getMessage());
-                System.out.println("sap执行失败，" + e.getMessage());
-                e.printStackTrace();
+            String messageReturn = sendMessage(gson.toJson(sapNotify));
+            if (MESSAGE_OK.equals(messageReturn)){
+                result = "success";
             }
         }
         log.info("===============结束==============");
         return result;
     }
 
+    /**
+     * 查询发票
+     * @param criteria 查询条件
+     * @return 发票信息
+     * @throws Exception
+     */
     @RequestMapping("/searchInvoice")
     public String searchInvoice(@RequestBody Criteria criteria) throws Exception{
 
@@ -263,6 +240,29 @@ public class InvoiceController {
         SyncResult syncResult = gson.fromJson(responseJson, SyncResult.class);
 
         // 组装数据
+        SAPNotify sapNotify = convertResultToSapnotify(syncResult);
+        log.info("===============结束==============");
+        return gson.toJson(sapNotify);
+    }
+
+    /**
+     * 发送消息
+     * @param gson json数据
+     */
+    public String sendMessage(String gson){
+        //发送到队列
+        Message message = new Message();
+        message.setBody(gson.getBytes());
+        String result = rocketMQProducer.send(message);
+        return result;
+    }
+
+    /**
+     * 返回值转换
+     * @param syncResult
+     * @return
+     */
+    private SAPNotify convertResultToSapnotify(SyncResult syncResult){
         SAPNotify sapNotify = new SAPNotify();
         sapNotify.setSerialNo(syncResult.getSerialNo());
         sapNotify.setCode(syncResult.getCode());
@@ -281,10 +281,6 @@ public class InvoiceController {
             sapNotify.setNoTax(syncResult.getInvoices().get(0).getNoTaxAmount());
             sapNotify.setTaxAmount(syncResult.getInvoices().get(0).getTaxAmount());
         }
-
-
-        log.info("===============结束==============");
-        return gson.toJson(sapNotify);
+        return sapNotify;
     }
-
 }

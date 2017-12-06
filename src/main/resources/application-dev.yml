@@ -25,3 +25,13 @@ sapconfig:
   lang: zh
   poolCapacity: 3
   peakLimit: 00
+
+mqconfig:
+  nameSrvAddr: 10.1.13.220:9876
+  consumerGroupName: EINVOICE-CONSUMER-DEV
+  producerGroupName: EINVOICE-PRODUCER-DEV
+  topics: EINVOICE-DEV
+
+
+
+
