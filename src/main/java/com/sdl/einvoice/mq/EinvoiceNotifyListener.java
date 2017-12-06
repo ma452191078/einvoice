@@ -34,34 +34,40 @@ public class EinvoiceNotifyListener implements MessageListenerConcurrently {
 
         ConsumeConcurrentlyStatus consumeMsg = ConsumeConcurrentlyStatus.RECONSUME_LATER;
         for (MessageExt message : list) {
+            if (list.get(0).getReconsumeTimes() <= 3){
+                String msgBody = new String(message.getBody());
+                System.out.println("msg data from rocketMQ:" + msgBody);
 
-            String msgBody = new String(message.getBody());
-            System.out.println("msg data from rocketMQ:" + msgBody);
+                SAPUtil sapUtil = new SAPUtil(sapConfig);
+                //function名称
+                String functionName = "Z_SDL_RH_NOTIFY";
+                HashMap<String, String> importParam = new HashMap<>();
+                HashMap<String, Object> exportParam;
+                HashMap<String,Object> returnParam = new HashMap<>();
 
-            SAPUtil sapUtil = new SAPUtil(sapConfig);
-            //function名称
-            String functionName = "Z_SDL_RH_NOTIFY";
-            HashMap<String, String> importParam = new HashMap<>();
-            HashMap<String, Object> exportParam;
-            HashMap<String,Object> returnParam = new HashMap<>();
+                importParam.put("IJSON", msgBody);
+                returnParam.put("OFLAG","");
+                returnParam.put("OMSG","");
 
-            importParam.put("IJSON", msgBody);
-            returnParam.put("OFLAG","");
-            returnParam.put("OMSG","");
-
-            // 调用RFC
-            try {
-                exportParam = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
-                if ("0".equals(exportParam.get("OFLAG"))){
-                    log.info("sap执行成功，数据已接收");
-                    consumeMsg = ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-                }else {
-                    log.info("sap执行失败，{}",exportParam.get("OMSG"));
+                // 调用RFC
+                try {
+                    exportParam = sapUtil.executeSapFun(functionName,importParam,null,returnParam);
+                    if ("0".equals(exportParam.get("OFLAG"))){
+                        log.info("sap执行成功，数据已接收");
+                        consumeMsg = ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                    }else {
+                        log.info("sap执行失败，{}",exportParam.get("OMSG"));
+                    }
+                } catch (JCoException e) {
+                    log.info("sap执行失败，{}",e.getMessage());
+                    e.printStackTrace();
                 }
-            } catch (JCoException e) {
-                log.info("sap执行失败，{}",e.getMessage());
-                e.printStackTrace();
+            } else {
+                log.error("重试超过3次，自动跳过");
+                log.error("Json数据:{}", new String(message.getBody()));
+                consumeMsg = ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
+
         }
 
         return consumeMsg;

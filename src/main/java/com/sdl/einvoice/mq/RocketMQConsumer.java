@@ -7,6 +7,7 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 
+import javax.annotation.PreDestroy;
 import java.util.UUID;
 
 /**
@@ -57,20 +58,21 @@ public class RocketMQConsumer {
 
         try {
             consumer.start();
-            //关闭钩子
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                @Override
-                public void run() {
-                    if (consumer != null) {
-                        log.info("正在关闭RocketMQ的消费者");
-                        consumer.shutdown();
-                    }
-                }
-            });
         } catch (MQClientException e) {
             e.printStackTrace();
         }
         System.out.println("RocketMQConsumer Started! group=" + consumer.getConsumerGroup() + " instance=" + consumer.getInstanceName()
         );
+    }
+
+    /**
+     * SpringBoot停止时关闭消费者
+     */
+    @PreDestroy
+    public void shutDownConsumer(){
+        if (consumer != null) {
+            log.info("正在关闭RocketMQ的消费者");
+            consumer.shutdown();
+        }
     }
 }

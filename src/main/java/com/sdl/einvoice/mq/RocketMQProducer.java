@@ -7,6 +7,7 @@ import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.rocketmq.common.message.Message;
 
+import javax.annotation.PreDestroy;
 import java.util.UUID;
 
 /**
@@ -31,20 +32,23 @@ public class RocketMQProducer {
         sender = new DefaultMQProducer(groupName);
         sender.setNamesrvAddr(nameServer);
         sender.setInstanceName(UUID.randomUUID().toString());
+        sender.setRetryTimesWhenSendFailed(4);
         try {
             sender.start();
-            //关闭钩子
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                @Override
-                public void run() {
-                    if (sender != null) {
-                        log.info("正在关闭RocketMQ的生产者");
-                        sender.shutdown();
-                    }
-                }
-            });
+
         } catch (MQClientException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * SpringBoot停止时关闭生产者
+     */
+    @PreDestroy
+    public void shutDownProducer(){
+        if (sender != null) {
+            log.info("正在关闭RocketMQ的生产者");
+            sender.shutdown();
         }
     }
 

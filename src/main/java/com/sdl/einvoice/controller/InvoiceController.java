@@ -176,7 +176,7 @@ public class InvoiceController {
     @RequestMapping("/notifyStanley")
     public String notifyStanley(@RequestBody SyncResult resultInvoice){
         String result = "failed";
-        String MESSAGE_OK = "OK";
+        String MESSAGE_OK = "SEND_OK";
         log.info("===============史丹利电子发票================");
         log.info("===============开始执行回调操作==============");
         log.info("回调报文：{}",resultInvoice.toString());
