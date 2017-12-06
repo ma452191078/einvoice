@@ -7,6 +7,8 @@ import com.sdl.einvoice.config.SapConfig;
 import com.sdl.einvoice.domain.SAPNotify;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,7 +21,7 @@ import java.util.*;
  */
 public class SAPUtil {
 
-    static String ABAP_AS_POOLED = "ABAP_AS_WITH_POOL";
+    static String ABAP_AS_POOLED = "ABAP_AS_WITH_POOL_TEST";
     static String SUFFIX = "jcoDestination";
 
     public SAPUtil(SapConfig sapConfig){

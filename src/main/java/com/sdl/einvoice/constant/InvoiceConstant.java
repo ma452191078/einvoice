@@ -18,11 +18,11 @@ public interface InvoiceConstant {
     /**
      * 正式
      */
-    String PRD_CREATE_URL = "https://www.chinaeinv.com/igs/api/invoiceApi.jspa";
+//    String PRD_CREATE_URL = "https://www.chinaeinv.com/igs/api/invoiceApi.jspa";
     /**
      * 测试
      */
-//    String PRD_CREATE_URL = "http://www.chinaeinv.com:980/igs/api/invoiceApi.jspa";
+    String PRD_CREATE_URL = "http://www.chinaeinv.com:980/igs/api/invoiceApi.jspa";
 
     String APPCODE = "APPCODE";
     String CMDNAME = "CMDNAME";

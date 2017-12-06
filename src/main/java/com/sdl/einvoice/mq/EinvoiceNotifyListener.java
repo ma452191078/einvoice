@@ -9,6 +9,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +20,11 @@ import java.util.List;
  * @date Create in 2017/12/1 15:37
  */
 @Slf4j
+@Component
 public class EinvoiceNotifyListener implements MessageListenerConcurrently {
 
     @Autowired
-    private SapConfig sapConfig;
+    SapConfig sapConfig;
     /**
      * 消息到达时对消息进行处理
      * @param list  消息内容
@@ -32,9 +34,11 @@ public class EinvoiceNotifyListener implements MessageListenerConcurrently {
     @Override
     public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> list, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
 
-        ConsumeConcurrentlyStatus consumeMsg = ConsumeConcurrentlyStatus.RECONSUME_LATER;
+
+        ConsumeConcurrentlyStatus consumeMsg = null;
         for (MessageExt message : list) {
-            if (list.get(0).getReconsumeTimes() <= 3){
+            //超过三次返回成功，不再重试
+            if (message.getReconsumeTimes() <= 2){
                 String msgBody = new String(message.getBody());
                 System.out.println("msg data from rocketMQ:" + msgBody);
 

@@ -2,15 +2,19 @@ package com.sdl.einvoice.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
  * 发票配置信息
  * @author majingyuan
  */
-@Data
+
 @Component
 @ConfigurationProperties(prefix = "sapconfig")
+@EnableConfigurationProperties
+@Data
 public class SapConfig {
 
     private String ashost;

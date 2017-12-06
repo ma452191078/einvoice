@@ -1,6 +1,7 @@
 package com.sdl.einvoice;
 
 import com.sdl.einvoice.config.MQConfig;
+import com.sdl.einvoice.config.SapConfig;
 import com.sdl.einvoice.mq.RocketMQConsumer;
 import com.sdl.einvoice.mq.EinvoiceNotifyListener;
 import com.sdl.einvoice.mq.RocketMQProducer;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 
@@ -16,6 +18,8 @@ public class EinvoiceApplication  extends SpringBootServletInitializer {
 
 	@Autowired
 	MQConfig mqConfig;
+	@Autowired
+	EinvoiceNotifyListener mqListener;
 	/**
 	 * 启动生产者
 	 */
@@ -32,7 +36,7 @@ public class EinvoiceApplication  extends SpringBootServletInitializer {
 	 */
 	@Bean
 	public RocketMQConsumer startConsumer(){
-		EinvoiceNotifyListener mqListener = new EinvoiceNotifyListener();
+//		EinvoiceNotifyListener mqListener = new EinvoiceNotifyListener();
 		RocketMQConsumer mqConsumer = new RocketMQConsumer(mqListener, mqConfig.getNameSrvAddr(),
 				mqConfig.getConsumerGroupName(), mqConfig.getTopics());
 		mqConsumer.init();

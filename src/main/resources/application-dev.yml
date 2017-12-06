@@ -28,9 +28,9 @@ sapconfig:
 
 mqconfig:
   nameSrvAddr: 10.1.13.220:9876
-  consumerGroupName: EINVOICE-CONSUMER-DEV
-  producerGroupName: EINVOICE-PRODUCER-DEV
-  topics: EINVOICE-DEV
+  consumerGroupName: EINVOICE-CONSUMER-DEV1
+  producerGroupName: EINVOICE-PRODUCER-DEV1
+  topics: EINVOICE-DEV1
 
 
 
