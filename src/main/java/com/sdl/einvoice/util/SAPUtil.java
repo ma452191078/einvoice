@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class SAPUtil {
 
-    static String ABAP_AS_POOLED = "ABAP_AS_WITH_POOL_TEST";
+    static String ABAP_AS_POOLED = "ABAP_AS_WITH_POOL";
     static String SUFFIX = "jcoDestination";
 
     public SAPUtil(SapConfig sapConfig){
@@ -33,8 +33,10 @@ public class SAPUtil {
         connectProperties.setProperty(DestinationDataProvider.JCO_USER,   sapConfig.getUser());
         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, sapConfig.getPasswd());
         connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   sapConfig.getLang());
-        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, sapConfig.getPoolCapacity());  //最大空连接数
-        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    sapConfig.getPeakLimit()); //最大活动连接数
+        //最大空连接数
+        connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, sapConfig.getPoolCapacity());
+        //最大活动连接数
+        connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT,    sapConfig.getPeakLimit());
 
 //        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.7.11");
 //        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  "00");
