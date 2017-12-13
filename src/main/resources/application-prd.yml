@@ -25,7 +25,7 @@ sapconfig:
   peakLimit: 10
 
 mqconfig:
-  namesrvAddr: 10.1.13.220:9876
+  nameSrvAddr: 10.1.13.220:9876
   consumerGroupName: EINVOICE-CONSUMER-PRD
   producerGroupName: EINVOICE-PRODUCER-PRD
   topics: EINVOICE-PRD
